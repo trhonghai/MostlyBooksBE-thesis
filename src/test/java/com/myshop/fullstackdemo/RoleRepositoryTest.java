@@ -20,8 +20,8 @@ public class RoleRepositoryTest {
     private RoleRepository repo;
     @Test
     void testCreateFirstRole() {
-        Role roleAdmin =  Role.builder().name("Admin").description("Quản lý tất cả.").build();
-        Role savedRole =  repo.save(roleAdmin);
+        Role roleCustomer =  Role.builder().name("Customer").description("Customer").build();
+        Role savedRole =  repo.save(roleCustomer);
         Assertions.assertThat(savedRole.getId()).isGreaterThan(0);
     }
 
@@ -31,15 +31,14 @@ public class RoleRepositoryTest {
         Role roleSalePerson =  Role.builder().name("Saleperson").description("Quản lý giá sản phẩm" +
                 ", khách hàng, vận chuyển, đơn hàng và báo cáo doanh thu").build();
 
-        Role roleEditor =  Role.builder().name("Editor").description( "Quản lý doanh mục"
-                + ", thương hiệu, sản phẩm").build();
+
 
         Role roleShipper =  Role.builder().name("Shipper").description( "Xem sản phẩm, "
                 + "Xem đơn hàng và cập nhật tình trạng đơn hàng.").build();
 
         Role roleAssisitant =  Role.builder().name("Assistant").description( "Quản lý các câu hỏi và đánh giá").build();
-
-        repo.saveAll(java.util.List.of(roleSalePerson,roleEditor,roleShipper,roleAssisitant));
+        Role roleCustomer = Role.builder().name("Customer").description("Khách han").build();
+        repo.saveAll(java.util.List.of(roleSalePerson,roleShipper,roleAssisitant));
     }
 
 }

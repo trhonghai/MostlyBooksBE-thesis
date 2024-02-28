@@ -26,15 +26,15 @@ public class CustomerRepositoryTests {
         long countryId = 1;
         Country country = countryRepository.findById(countryId).get();
         Customer customer = new Customer();
-        customer.setCountry(country);
+//        customer.setCountry(country);
         customer.setFirstName("Truong");
         customer.setLastName("Hong Hai");
         customer.setPassword("35115442");
         customer.setEmail("trhonghaii@gmail.com");
-        customer.setPhoneNumber("0935115442");
-        customer.setAddress_line("B4 KDC91B");
-        customer.setCity("Cần Thơ");
-        customer.setState("Ninh kiều");
+        customer.setPhone("0935115442");
+//        customer.setAddress_line("B4 KDC91B");
+//        customer.setCity("Cần Thơ");
+//        customer.setState("Ninh kiều");
 
         Customer savedCustomer = customerRepository.save(customer);
         Assertions.assertThat(savedCustomer.getId()).isGreaterThan(0);

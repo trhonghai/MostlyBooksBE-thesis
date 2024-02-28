@@ -6,6 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -20,19 +24,21 @@ public class Customer {
     private String password;
     private String firstName;
     private String lastName;
-    private String phoneNumber;
-    private String address_line;
-    private String city;
-    private String state;
+    private String phone;
+    private Date dateOfBirth;
+    private String sex;
+    private boolean enabled;
 
+    @OneToOne
+    @JoinColumn(name ="user_id")
+    private User user;
 
+    @OneToOne
+    @JoinColumn(name="cart_id")
+    private Cart cart;
 
-
-
-    @ManyToOne
-    @JoinColumn(name="country_id")
-    private Country country;
-
+    @OneToMany
+    private List<Address> address = new ArrayList<>();
 
 
 }

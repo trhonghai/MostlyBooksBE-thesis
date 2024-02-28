@@ -16,4 +16,8 @@ public class AuthenticationResponse {
     @JsonProperty("refresh_token")
     private String refresh_token;
 
+
+//    private long cartId;
+//    private long userId;
+
 }

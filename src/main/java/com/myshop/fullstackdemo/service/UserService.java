@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 
 @Service
-public class UserService {
+public class
+UserService {
     @Autowired
     private UserRepository userRepo;
     @Autowired

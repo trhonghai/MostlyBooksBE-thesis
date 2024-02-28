@@ -32,8 +32,8 @@ public class ReviewsRepositoryTests {
     public void testCreateReviews(){
         long bookId = 1;
         Book book = bookRepository.findById(bookId).get();
-        long userId = 1;
-        Customer customer = customerRepository.findById(userId).get();
+        long customerId = 5;
+        Customer customer = customerRepository.findById(customerId).get();
 
         Reviews review = new Reviews();
         review.setComment("Perfect for my needs. Loving it!");
