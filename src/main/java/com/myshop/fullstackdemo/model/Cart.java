@@ -1,5 +1,6 @@
 package com.myshop.fullstackdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,12 +17,18 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "cart_items")
+
 public class Cart {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @OneToMany
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<OrderDetail> orderDetail = new ArrayList<>();
+    public void removeOrderDetails(OrderDetail orderDetails){
+        this.orderDetail.remove(orderDetails);
+        orderDetails.setCart(null);
+    }
 }

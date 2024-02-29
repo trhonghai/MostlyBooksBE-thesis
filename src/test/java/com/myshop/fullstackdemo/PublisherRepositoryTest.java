@@ -23,11 +23,11 @@ public class PublisherRepositoryTest {
     @Test
     public void testCreatePublisher(){
         Publisher publisher = new Publisher();
-        publisher.setName("Nhà xuất bản phụ nữ Việt Nam");
-        publisher.setEmail("truyenthongvaprnxbpn@gmail.com");
-        publisher.setAddress("39 P. Hàng Chuối, Phạm Đình Hổ, Hai Bà Trưng, Hà Nội");
-        publisher.setPhone("024 3971 0717");
-        publisher.setPhotos("https://www.netabooks.vn/data/author/16073/logo-nxb-phu-nu.jpg");
+        publisher.setName("Nhà xuất bản Hội nhà văn");
+        publisher.setEmail(" nhaxuatbanhnv65@gmail.com");
+        publisher.setAddress("65, Nguyễn Du, quận Hai Bà Trưng, Hà Nội");
+        publisher.setPhone("024 38222135");
+        publisher.setPhotos("https://www.netabooks.vn/data/author/18246/logo--nxb-hoi-nha-van.jpg");
         Publisher savedPublisher=repo.save(publisher);
         Assertions.assertThat(savedPublisher.getId()).isGreaterThan(0);
     }

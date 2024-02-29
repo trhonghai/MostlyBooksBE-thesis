@@ -36,7 +36,7 @@ public class CartController {
     @GetMapping
     public ResponseEntity<List<OrderDetail>> getCart(@RequestParam("cart") Long cartId){
         List<OrderDetail> orderDetails = cartRepository.findById(cartId).orElseThrow().getOrderDetail();
-        return ResponseEntity.ok(orderDetails);
+        return ResponseEntity.ok().body(orderDetails);
     }
 
 
@@ -45,7 +45,9 @@ public class CartController {
         Cart cart = cartRepository.findById((long) cartItem.getCartId()).orElseThrow(()->new NotFoundException("cart " +
                 "not found, " +
                 "id="+cartItem.getCartId()));
-        Book book = entityManager.getReference(Book.class, cartItem.getBookId());
+//        Book book = entityManager.getReference(Book.class, cartItem.getBookId());
+        Book book = bookRepository.findById(cartItem.getBookId()).get();
+
         List<OrderDetail> orderDetails = cart.getOrderDetail();
         for (OrderDetail orderDetail : orderDetails) {
             if (orderDetail.getBook().getId().equals((long) cartItem.getBookId())) {
@@ -54,18 +56,43 @@ public class CartController {
                 return ResponseEntity.ok(orderDetail);
             }
         }
+
         OrderDetail newOrderDetail = new OrderDetail();
+        orderDetails.add(newOrderDetail);
         newOrderDetail.setBook(book);
         newOrderDetail.setPrice(cartItem.getPrice());
         newOrderDetail.setQuantity(cartItem.getQuantity());
         newOrderDetail.setCart(cart);
         orderDetailRepository.save(newOrderDetail);
-        orderDetails.add(newOrderDetail);
+
         cartRepository.save(cart);
-        return ResponseEntity.ok(newOrderDetail);
+        System.out.println(newOrderDetail);
+
+        return ResponseEntity.ok().body((OrderDetail) orderDetails);
     }
 
 
+    @DeleteMapping("/delete-item")
+    public ResponseEntity<List<OrderDetail>> removeFromCart(@RequestParam("cart") Long cartId,
+                                                            @RequestParam("item") Long orderDetailsId ){
+        Cart cart = cartRepository.findById(cartId).orElseThrow(()-> new NotFoundException("cart " +
+                "not found, " +
+                "id="+cartId));
+        List<OrderDetail> orderDetails =cart.getOrderDetail();
+        for (OrderDetail o:
+                orderDetails) {
+            if(o.getId().equals(orderDetailsId)){
+                System.out.println("o="+o.getId()+"id="+orderDetailsId);
+                cart.removeOrderDetails(o);
+                break;
+            }
+        }
+        cartRepository.save(cart);
+        List<OrderDetail> newOrderDetails = cart.getOrderDetail().stream().toList();
+
+
+        return ResponseEntity.ok(newOrderDetails);
+    }
 
 
 
