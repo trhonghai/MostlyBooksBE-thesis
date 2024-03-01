@@ -25,8 +25,7 @@ import java.util.List;
 
 public class CartController {
     private final CartRepository cartRepository;
-    @PersistenceContext
-    private EntityManager entityManager;
+
 
     private final BookRepository bookRepository;
 
@@ -41,22 +40,19 @@ public class CartController {
 
 
     @PostMapping("/add-to-cart")
-    public ResponseEntity<OrderDetail> addToCart(@RequestBody CartItem cartItem){
+    public ResponseEntity<List<OrderDetail>> addToCart(@RequestBody CartItem cartItem){
         Cart cart = cartRepository.findById((long) cartItem.getCartId()).orElseThrow(()->new NotFoundException("cart " +
                 "not found, " +
                 "id="+cartItem.getCartId()));
-//        Book book = entityManager.getReference(Book.class, cartItem.getBookId());
         Book book = bookRepository.findById(cartItem.getBookId()).get();
-
         List<OrderDetail> orderDetails = cart.getOrderDetail();
         for (OrderDetail orderDetail : orderDetails) {
             if (orderDetail.getBook().getId().equals((long) cartItem.getBookId())) {
-                orderDetail.setQuantity(orderDetail.getQuantity() + 1);
+                orderDetail.setQuantity(orderDetail.getQuantity() + cartItem.getQuantity());
                 cartRepository.save(cart);
-                return ResponseEntity.ok(orderDetail);
+                return ResponseEntity.ok(orderDetails);
             }
         }
-
         OrderDetail newOrderDetail = new OrderDetail();
         orderDetails.add(newOrderDetail);
         newOrderDetail.setBook(book);
@@ -64,11 +60,8 @@ public class CartController {
         newOrderDetail.setQuantity(cartItem.getQuantity());
         newOrderDetail.setCart(cart);
         orderDetailRepository.save(newOrderDetail);
-
         cartRepository.save(cart);
-        System.out.println(newOrderDetail);
-
-        return ResponseEntity.ok().body((OrderDetail) orderDetails);
+        return ResponseEntity.ok().body(orderDetails);
     }
 
 
@@ -93,11 +86,35 @@ public class CartController {
 
         return ResponseEntity.ok(newOrderDetails);
     }
+    @PutMapping("/update-quantity")
+    public ResponseEntity<List<OrderDetail>> updateItemQuantity(@RequestParam("cart") Long cartId ,
+                                                                @RequestParam("item") Long orderDetailsId,
+                                                                @RequestParam("method") String method){
+        Cart cart = cartRepository.findById(cartId).orElseThrow( ()-> new NotFoundException("cart " +
+                "not found, " +
+                "id="+cartId));
+        List<OrderDetail> orderDetails =cart.getOrderDetail();
+        for (OrderDetail o:
+                orderDetails) {
+            if(o.getId().equals(Long.valueOf(orderDetailsId))){
+                if(method.equals("increase")){
+                    System.out.println("o="+o.getId()+"id="+orderDetailsId);
+                    o.setQuantity(o.getQuantity()+1);
+                }else if(method.equals("decrease")){
+                    if(o.getQuantity()==1){
+                        cart.removeOrderDetails(o);
+                    }else{
+                        o.setQuantity(o.getQuantity()-1);
+                    }
+                }
+                break;
+            }
+        }
+        cartRepository.save(cart);
+        List<OrderDetail> newOrderDetails = cart.getOrderDetail().stream().toList();
+        return ResponseEntity.ok(newOrderDetails);
+    }
 
-
-
-//    @PutMapping("/update-quantity")
-//    public ResponseEntity<List<OrderDetail>> updateItemQuantity(@RequestParam("cart") String cartId)
 
 
 
