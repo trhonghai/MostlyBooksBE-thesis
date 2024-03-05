@@ -1,5 +1,6 @@
 package com.myshop.fullstackdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +38,8 @@ public class Customer {
     @JoinColumn(name="cart_id")
     private Cart cart;
 
-    @OneToMany
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Address> address = new ArrayList<>();
 
 

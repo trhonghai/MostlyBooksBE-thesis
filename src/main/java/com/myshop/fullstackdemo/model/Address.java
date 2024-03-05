@@ -1,5 +1,6 @@
 package com.myshop.fullstackdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,15 +22,14 @@ public class Address {
     private String lastName;
     private String phoneNumber;
     private String address;
-    private String city;
-    private String state;
 
-    @ManyToOne
-    @JoinColumn(name = "country_id")
-    private Country country;
+    private String ward;
+    private String district;
+    private String city;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
+    @JsonBackReference
     private Customer customer;
 
     private boolean defaultForShopping;

@@ -17,6 +17,6 @@ public class SignupRequest {
     private String email;
     private String password;
     private String photos;
-    private Date Phone;
+    private String Phone;
     private Set<Role> roles = new HashSet<>();
 }
