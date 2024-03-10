@@ -45,7 +45,10 @@ public class WebSecurityConfig {
                                 .requestMatchers("/user-cart/**").permitAll()
                                 .requestMatchers("/user-infor/**").permitAll()
                                 .requestMatchers("/provinces/**").permitAll()
+                                .requestMatchers("/payment/create").permitAll()
+                                .requestMatchers("/api/checkout/webhook").permitAll()
 //                                .requestMatchers("/api/hell-private/**").hasRole("Admin")
+                                .requestMatchers("/customer/order/**").permitAll()
                                 .anyRequest().authenticated()
                 )
 //                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer

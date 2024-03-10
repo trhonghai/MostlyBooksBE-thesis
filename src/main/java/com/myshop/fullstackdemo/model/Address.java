@@ -1,6 +1,8 @@
 package com.myshop.fullstackdemo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,9 +31,10 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonBackReference
+    @JsonIgnore
     private Customer customer;
 
     private boolean defaultForShopping;
+
 
 }

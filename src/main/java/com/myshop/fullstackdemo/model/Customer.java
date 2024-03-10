@@ -1,5 +1,7 @@
 package com.myshop.fullstackdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,5 +44,8 @@ public class Customer {
     @JsonManagedReference
     private List<Address> address = new ArrayList<>();
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<Order> orders = new ArrayList<>();
 
 }

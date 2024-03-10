@@ -1,6 +1,7 @@
 package com.myshop.fullstackdemo.config;
 
 import com.paypal.base.rest.APIContext;
+import com.paypal.base.rest.OAuthTokenCredential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,4 +18,7 @@ public class PaypalConfig {
     public APIContext apiContext() {
         return new APIContext(clientId, clientSecret, mode);
     }
+
+
+
 }

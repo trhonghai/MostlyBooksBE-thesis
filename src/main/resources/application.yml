@@ -24,13 +24,10 @@ spring:
             database: mysql
 #paypal:
 paypal:
-    client-id: CLIENT_ID
-    client-secret: CLIENT_SECRET
+    client-id: AWMswA26MJWfe7tNcTBz5ZzW9LOx4ifuDzrydpAcjeN2ERERLzZdNC5wLru3OQ7eT9Zp1XgkyeVFDLiT
+    client-secret: ECI19LsLe2m49_p__pdR0otyENgJUnhXRfgEoZ-IBtGyzE66BDAdHPH1VNqIrlaZWM2JqY11baOM1Lkz
     mode: sandbox # Use #sandbox for testing and 'live' for production
 
 
-#paypal:
-#client-id: CLIENT_ID
-#client-secrect: CLIENT_SECRET
-#mode: sandbox # Use #sandbox for testing and 'live' for production
+
 

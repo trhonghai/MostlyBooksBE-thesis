@@ -22,16 +22,15 @@ public class CustomerController {
 
     @PutMapping("/update-customer/{id}")
     Customer updateCustomer(@RequestBody Customer newUser, @PathVariable Long id){
-        return customerRepository.findById(id).map(customer ->{
-            customer.setFirstName(newUser.getFirstName());
-            customer.setLastName(newUser.getLastName());
-            customer.setPhone(newUser.getPhone());
-            customer.setSex(newUser.getSex());
-            customer.setDateOfBirth(newUser.getDateOfBirth());
-            return customerRepository.save(customer);
-        }).orElseThrow(()->new NotFoundException("Customer " +
-                "not found, " +
-                "id="+id));
+        System.out.println("newUser" + newUser);
+        Customer customer = customerRepository.findById(id).get();
+        customer.setFirstName(newUser.getFirstName());
+        customer.setLastName(newUser.getLastName());
+        customer.setDateOfBirth(newUser.getDateOfBirth());
+        customer.setPhone(newUser.getPhone());
+        customer.setSex(newUser.getSex());
+        customer.setEmail(newUser.getEmail());
+        return customerRepository.save(customer);
     }
 
 
