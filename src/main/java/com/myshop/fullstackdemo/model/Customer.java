@@ -44,8 +44,8 @@ public class Customer {
     @JsonManagedReference
     private List<Address> address = new ArrayList<>();
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
-    private List<Order> orders = new ArrayList<>();
+//    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonBackReference
+//    private List<Order> orders = new ArrayList<>();
 
 }

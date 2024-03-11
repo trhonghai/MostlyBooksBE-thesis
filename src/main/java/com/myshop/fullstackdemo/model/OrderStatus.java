@@ -2,6 +2,7 @@ package com.myshop.fullstackdemo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,6 @@ public class OrderStatus {
     private Status status;
 
     @OneToMany(mappedBy = "orderStatus", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @JsonBackReference
     private List<Order> orders = new ArrayList<>();
 }

@@ -30,11 +30,11 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonBackReference
+    @JsonManagedReference
     private Customer customer;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonBackReference
     private List<OrderDetail> orderDetails = new ArrayList<>();
 
     @ManyToOne
@@ -49,6 +49,8 @@ public class Order {
     @OneToOne
     @JoinColumn(name = "payment_id")
     private Payment payment;
+
+
 
 
 }

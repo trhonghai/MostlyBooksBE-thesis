@@ -2,6 +2,7 @@ package com.myshop.fullstackdemo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +35,6 @@ public class OrderDetail {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    @JsonBackReference
+    @JsonIgnore
     private Order order;
 }

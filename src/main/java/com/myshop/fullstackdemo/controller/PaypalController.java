@@ -21,8 +21,6 @@ public class PaypalController {
     @PostMapping("/payment/create")
     public ResponseEntity<?> createPayment(@RequestBody PaymentRequest paymentRequest) {
         try {
-
-
             Order order = orderService.createOrder(paymentRequest);
             String cancelUrl = "http://localhost:3000";
             String successUrl = "http://localhost:3000";

@@ -31,7 +31,7 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonIgnore
+    @JsonBackReference
     private Customer customer;
 
     private boolean defaultForShopping;

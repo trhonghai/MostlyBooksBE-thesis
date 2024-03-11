@@ -17,7 +17,9 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("user-cart")
@@ -86,6 +88,47 @@ public class CartController {
 
         return ResponseEntity.ok(newOrderDetails);
     }
+
+    @PostMapping("/checkout-items")
+    public ResponseEntity<List<Long>> deleteCheckoutListFromCart(@RequestParam("cart") Long cartId,
+                                                                 @RequestBody List<Long> orderDetailIds) {
+        System.out.println("OrderDetail IDs: " + orderDetailIds);
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new NotFoundException("Cart not found, id=" + cartId));
+
+        List<OrderDetail> deletedOrderDetails = new ArrayList<>();
+        for (Long orderDetailId : orderDetailIds) {
+            OrderDetail orderDetail = orderDetailRepository.findById(orderDetailId)
+                    .orElseThrow(() -> new NotFoundException("OrderDetail not found, id=" + orderDetailId));
+            cart.removeOrderDetails(orderDetail);
+            deletedOrderDetails.add(orderDetail);
+        }
+        cartRepository.save(cart);
+
+        // Trả về danh sách các ID của các OrderDetail đã bị xóa
+        List<Long> deletedOrderDetailIds = deletedOrderDetails.stream()
+                .map(OrderDetail::getId)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(deletedOrderDetailIds);
+    }
+//    public ResponseEntity<List<OrderDetail>> DeleteCheckoutListFromCart(@RequestParam("cart") Long cartId,
+//                                                                        @RequestBody List<OrderDetail> OrderDetailsId){
+//        System.out.println("cartList = " + OrderDetailsId);
+//        Cart cart = cartRepository.findById(cartId).orElseThrow(()-> new NotFoundException("cart " +
+//                "not found, " +
+//                "id="+cartId));
+//        List<OrderDetail> orderDetails = new ArrayList<>();
+//        OrderDetailsId.forEach(cartItem -> {
+//            OrderDetail orderDetail = orderDetailRepository.findById(cartItem.getId()).orElseThrow(() -> new NotFoundException("OrderDetail " +
+//                    "not found, " +
+//                    "id=" + cartItem.getId()));
+//            cart.removeOrderDetails(orderDetail);
+//            orderDetails.add(orderDetail);
+//        });
+//        cartRepository.save(cart);
+//        return ResponseEntity.ok().body(orderDetails);
+//    }
     @PutMapping("/update-quantity")
     public ResponseEntity<List<OrderDetail>> updateItemQuantity(@RequestParam("cart") Long cartId ,
                                                                 @RequestParam("item") Long orderDetailsId,
@@ -115,7 +158,19 @@ public class CartController {
         return ResponseEntity.ok(newOrderDetails);
     }
 
-
+//    @PostMapping("/checkout-items")
+//    public ResponseEntity<List<OrderDetail>> getAList(@RequestBody List<OrderDetail> OrderDetailsId){
+//        System.out.println("cartList = " + OrderDetailsId);
+//        List<OrderDetail> orderDetails = new ArrayList<>();
+//        OrderDetailsId.forEach(cartItem -> {
+//           OrderDetail orderDetail = orderDetailRepository.findById(cartItem.getCartId()).orElseThrow(() -> new NotFoundException("OrderDetail " +
+//                   "not found, " +
+//                   "id=" + cartItem.getCartId()));
+//           orderDetail.getCart().removeOrderDetails(orderDetail);
+//           orderDetails.add(orderDetail);
+//        });
+//        return ResponseEntity.ok().body(orderDetails);
+//    }
 
 
 
