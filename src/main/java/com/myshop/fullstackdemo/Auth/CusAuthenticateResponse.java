@@ -15,7 +15,7 @@ public class CusAuthenticateResponse extends AuthenticationResponse {
 
     // Constructor with parameters
     public CusAuthenticateResponse(String access_token, String refresh_token, long cartId, long userId) {
-        super(access_token, refresh_token);
+        super(access_token, refresh_token, null);
         this.cartId = cartId;
         this.userId = userId;
     }

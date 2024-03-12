@@ -2,7 +2,9 @@ package com.myshop.fullstackdemo.controller;
 
 import com.myshop.fullstackdemo.exception.NotFoundException;
 import com.myshop.fullstackdemo.model.Customer;
+import com.myshop.fullstackdemo.model.User;
 import com.myshop.fullstackdemo.repository.CustomerRepository;
+import com.myshop.fullstackdemo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,7 @@ import java.util.Map;
 @RequestMapping("/user-infor")
 public class CustomerController {
     private final CustomerRepository customerRepository;
-
+    private final UserRepository userRepository;
     @GetMapping("/{id}")
     Customer getCustomer(@PathVariable Long id){
         return customerRepository.findById(id).orElseThrow(()->new NotFoundException("Customer " +
@@ -38,13 +40,25 @@ public class CustomerController {
 
         String sex = newUser.get("sex");
 
-        Customer customer = customerRepository.findById(id).get();
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new NotFoundException("Customer not found, id=" + id));
         customer.setEmail(email);
         customer.setFirstName(firstName);
         customer.setLastName(lastName);
         customer.setDateOfBirth(dateOfBirth);
         customer.setPhone(phone);
         customer.setSex(sex);
+
+
+        Long userId = customer.getUser().getId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found, id=" + userId));
+        user.setEmail(email);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPhone(phone);
+        user.setDateOfBirth(dateOfBirth);
+        user.setSex(sex);
+
+
         return customerRepository.save(customer);
     }
 

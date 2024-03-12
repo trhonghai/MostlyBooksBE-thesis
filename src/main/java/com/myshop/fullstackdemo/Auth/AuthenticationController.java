@@ -2,6 +2,7 @@ package com.myshop.fullstackdemo.Auth;
 
 
 import com.myshop.fullstackdemo.model.Customer;
+import com.myshop.fullstackdemo.model.Role;
 import com.myshop.fullstackdemo.model.User;
 import com.myshop.fullstackdemo.repository.CustomerRepository;
 import com.myshop.fullstackdemo.repository.UserRepository;
@@ -20,7 +21,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/users")
@@ -59,10 +62,12 @@ public class AuthenticationController {
         final String refreshToken = jwtService.generateRefreshToken(userDetails.getUsername());
         final Optional<Customer> customer = customerRepository.findCustomerByEmail(authenticationRequest.getEmail());
         final Optional<User> user = userRepository.findByEmail(authenticationRequest.getEmail());
+
         if (customer.isPresent()) {
             return new CusAuthenticateResponse(jwtToken, refreshToken, customer.get().getCart().getId(), customer.get().getId());
-        } else if (user.isPresent() && user.get().getRoles().stream().anyMatch(role -> role.getName().equals("Admin"))){
-            return new AuthenticationResponse(jwtToken, refreshToken  );
+        } else if (user.isPresent()){
+            List<String> roles = user.get().getRoles().stream().map(Role::getName).collect(Collectors.toList());
+            return new AuthenticationResponse(jwtToken, refreshToken, roles);
         }
         {
             return new AuthenticationResponse();

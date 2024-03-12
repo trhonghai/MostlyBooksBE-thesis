@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,6 +18,7 @@ public class AuthenticationResponse {
     @JsonProperty("refresh_token")
     private String refresh_token;
 
+    private List<String> roles;
 
 //    private long cartId;
 //    private long userId;

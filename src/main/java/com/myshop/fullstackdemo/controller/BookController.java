@@ -4,12 +4,15 @@ import com.myshop.fullstackdemo.model.Book;
 import com.myshop.fullstackdemo.model.DetailsImage;
 import com.myshop.fullstackdemo.repository.BookRepository;
 import com.myshop.fullstackdemo.service.BookService;
+import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -35,9 +38,9 @@ public class BookController {
     }
 
     @PostMapping("books/new")
-    public ResponseEntity<Book> createBook(@RequestBody Book book) {
+    public ResponseEntity<Book> createBook(@RequestBody Book book,  @RequestPart("image") MultipartFile multipartFile) throws IOException, StripeException {
         System.out.println("Book Authour"+ book.getAuthour().getId());
-        Book createdBook = bookService.saveBook(book);
+        Book createdBook = bookService.saveBook(book, multipartFile);
 
         return new ResponseEntity<>(createdBook, HttpStatus.CREATED);
     }
