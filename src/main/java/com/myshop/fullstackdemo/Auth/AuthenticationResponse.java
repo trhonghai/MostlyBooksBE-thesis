@@ -19,6 +19,7 @@ public class AuthenticationResponse {
     private String refresh_token;
 
     private List<String> roles;
+    private long userId;
 
 //    private long cartId;
 //    private long userId;

@@ -67,7 +67,7 @@ public class AuthenticationController {
             return new CusAuthenticateResponse(jwtToken, refreshToken, customer.get().getCart().getId(), customer.get().getId());
         } else if (user.isPresent()){
             List<String> roles = user.get().getRoles().stream().map(Role::getName).collect(Collectors.toList());
-            return new AuthenticationResponse(jwtToken, refreshToken, roles);
+            return new AuthenticationResponse(jwtToken, refreshToken, roles, user.get().getId());
         }
         {
             return new AuthenticationResponse();
