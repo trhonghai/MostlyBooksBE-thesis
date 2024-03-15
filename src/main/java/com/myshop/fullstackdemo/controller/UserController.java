@@ -35,7 +35,7 @@ public class UserController {
 
 
 
-@PostMapping(value = "/user")
+@PostMapping(value = "/users")
 
 
     User newUser(@RequestParam String newUser,
@@ -87,13 +87,13 @@ public class UserController {
 
 
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/users/{id}")
     User getUser(@PathVariable Long id){
         return userRepository.findById(id)
                 .orElseThrow(()->new UserNotFoundException(id));
     }
 
-    @PutMapping("/user/{id}")
+    @PutMapping("/users/{id}")
     User updateUser(@RequestBody User newUser, @PathVariable Long id){
         return userRepository.findById(id)
                 .map(user -> {
@@ -105,7 +105,7 @@ public class UserController {
                     return userRepository.save(user);
                 }).orElseThrow(()->new UserNotFoundException(id));
     }
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/users/{id}")
     String deleteUser(@PathVariable Long id){
         if(!userRepository.existsById(id)){
             throw new UserNotFoundException(id);

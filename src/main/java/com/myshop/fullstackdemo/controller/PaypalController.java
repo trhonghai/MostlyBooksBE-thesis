@@ -79,7 +79,7 @@ public class PaypalController {
         HttpEntity<?> entity = new HttpEntity<String>(null, headers);
 
         ResponseEntity<Object> response = restTemplate.exchange(
-                BASE + "/v2/payments/captures/" + orderId + "/capture",
+                BASE + "/v2/checkout/orders/" + orderId + "/capture",
                 HttpMethod.POST,
                 entity,
                 Object.class

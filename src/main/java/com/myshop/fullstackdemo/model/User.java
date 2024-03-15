@@ -30,7 +30,7 @@ public class User implements UserDetails {
     private Date dateOfBirth;
     private String sex;
     private boolean enabled;
-    @ManyToMany(fetch= FetchType.EAGER,cascade = CascadeType.ALL)
+    @ManyToMany(fetch= FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
