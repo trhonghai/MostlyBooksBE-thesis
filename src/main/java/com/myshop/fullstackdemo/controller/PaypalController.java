@@ -1,5 +1,8 @@
 package com.myshop.fullstackdemo.controller;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myshop.fullstackdemo.config.paypal.PaypalService;
 import com.myshop.fullstackdemo.model.Order;
 import com.myshop.fullstackdemo.service.OrderServiceImpl;
@@ -7,6 +10,7 @@ import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.json.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,6 +92,7 @@ public class PaypalController {
         );
         if (response.getStatusCode() == HttpStatus.CREATED) {
             LOGGER.log(Level.INFO, "ORDER CREATED");
+            Order order = orderService.captureOrder(orderId);
             return  response.getBody();
         } else {
             LOGGER.log(Level.INFO, "FAILED CREATING ORDER");
@@ -95,13 +102,11 @@ public class PaypalController {
     }
 
     @PostMapping("/orders/create")
-    public Object createOrder (@RequestBody PaymentRequest paymentRequest){
+    public Object createOrder (@RequestBody PaymentRequest paymentRequest) throws IOException {
         System.out.println("paymentRequest" + paymentRequest);
         String token = this.generateAccessToken();
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-
-        Order order = orderService.createOrder(paymentRequest);
 
         headers.set("Authorization", "Bearer " + token);
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -125,8 +130,21 @@ public class PaypalController {
                 entity,
                 Object.class
         );
+
         if (response.getStatusCode() == HttpStatus.CREATED) {
             LOGGER.log(Level.INFO, "ORDER CREATED");
+
+            System.out.println("response" + response.getBody().toString());
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = mapper.writeValueAsString( response.getBody());
+            System.out.println("jsonString" + jsonString);
+
+            String orderId = new JSONObject(jsonString).getString("id");
+            System.out.println("orderId" + orderId);
+
+//
+
+            Order order = orderService.createOrder(paymentRequest, orderId);
             return response.getBody(); // Trả về nội dung của phản hồi từ PayPal
         } else {
             LOGGER.log(Level.INFO, "FAILED CREATING ORDER");

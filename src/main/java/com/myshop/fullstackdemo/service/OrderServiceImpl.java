@@ -5,6 +5,7 @@ import com.myshop.fullstackdemo.model.*;
 import com.myshop.fullstackdemo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,7 +21,7 @@ public class OrderServiceImpl {
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
 
-    public Order createOrder(PaymentRequest paymentRequest) {
+    public Order createOrder(PaymentRequest paymentRequest, String orderId) {
 
         if(paymentRequest.getOrderDetailsId() == null || paymentRequest.getOrderDetailsId().isEmpty()){
             throw new RuntimeException("Order details are required");
@@ -57,7 +58,7 @@ public class OrderServiceImpl {
         }
 
         double Amount = orderDetailsList.stream().mapToDouble(orderDetail -> orderDetail.getPrice() * orderDetail.getQuantity()).sum();
-
+        order.setOrderCode(orderId);
         order.setAmount(Amount);
         order.setOrderDate(new Date());
         order.setCustomer(customer);
@@ -70,4 +71,13 @@ public class OrderServiceImpl {
 
         return order;
     }
+
+    public Order captureOrder(String orderCode) {
+        Order order = orderRepository.findByOrderCode(orderCode);
+        order.getOrderStatus().setStatus(Status.CAPTURED);
+        orderRepository.save(order);
+        return order;
+    }
+
+
 }

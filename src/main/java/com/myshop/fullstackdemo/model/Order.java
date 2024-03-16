@@ -27,6 +27,7 @@ public class Order {
     private float shipping;
 
     private Date orderDate;
+    private String orderCode;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")

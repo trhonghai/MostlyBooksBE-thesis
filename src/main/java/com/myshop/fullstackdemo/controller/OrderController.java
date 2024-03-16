@@ -22,6 +22,15 @@ public class OrderController {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Order>> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        if (orders.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
     @GetMapping("/{customerId}")
     public ResponseEntity<List<Order>> getOrderBycustomerId(@PathVariable long customerId) {
         List<Order> orders = orderRepository.findByCustomerId(customerId);
@@ -39,4 +48,6 @@ public class OrderController {
         }
         return ResponseEntity.ok(orderDetails);
     }
+
+
 }
