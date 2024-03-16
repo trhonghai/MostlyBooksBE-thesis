@@ -2,20 +2,20 @@ package com.myshop.fullstackdemo.controller;
 
 import com.myshop.fullstackdemo.model.Order;
 import com.myshop.fullstackdemo.model.OrderDetail;
+import com.myshop.fullstackdemo.model.OrderStatus;
+import com.myshop.fullstackdemo.model.Status;
 import com.myshop.fullstackdemo.repository.OrderDetailRepository;
 import com.myshop.fullstackdemo.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/customer/order")
 public class OrderController {
@@ -49,5 +49,9 @@ public class OrderController {
         return ResponseEntity.ok(orderDetails);
     }
 
-
+    @GetMapping("/filterStatus")
+    public List<Order> getOrdersByStatus(@RequestParam("status") Status status) {
+        System.out.println("status: " + status);
+        return orderRepository.findByOrderStatus_Status(status);
+    }
 }
