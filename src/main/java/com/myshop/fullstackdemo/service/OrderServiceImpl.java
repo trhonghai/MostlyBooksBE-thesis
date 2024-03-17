@@ -5,7 +5,6 @@ import com.myshop.fullstackdemo.model.*;
 import com.myshop.fullstackdemo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,12 +71,26 @@ public class OrderServiceImpl {
         return order;
     }
 
-    public Order captureOrder(String orderCode) {
+    public Order captureOrder(String orderCode, String captureId){
         Order order = orderRepository.findByOrderCode(orderCode);
         order.getOrderStatus().setStatus(Status.CAPTURED);
+        order.setCaptureId(captureId);
         orderRepository.save(order);
         return order;
     }
 
+    public Order refundOrder (String captureId){
+        Order order = orderRepository.findByCaptureId(captureId);
+        order.getOrderStatus().setStatus(Status.REFUNDED);
+        orderRepository.save(order);
+        return order;
+    }
+
+    public Order cancelOrder (String orderCode){
+        Order order = orderRepository.findByOrderCode(orderCode);
+        order.getOrderStatus().setStatus(Status.CANCELLED);
+        orderRepository.save(order);
+        return order;
+    }
 
 }

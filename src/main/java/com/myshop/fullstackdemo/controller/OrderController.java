@@ -54,4 +54,11 @@ public class OrderController {
         System.out.println("status: " + status);
         return orderRepository.findByOrderStatus_Status(status);
     }
+
+    @PutMapping("/cancelled/{orderId}")
+    public ResponseEntity<Order> cancelledOrder(@PathVariable long orderId ) {
+        Optional<Order> order = orderRepository.findById(orderId);
+        order.get().getOrderStatus().setStatus(Status.CANCELLED);
+        return new ResponseEntity<>(orderRepository.save(order.get()), HttpStatus.OK);
+    }
 }

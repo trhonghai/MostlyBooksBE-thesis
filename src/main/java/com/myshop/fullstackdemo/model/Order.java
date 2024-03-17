@@ -28,6 +28,7 @@ public class Order {
 
     private Date orderDate;
     private String orderCode;
+    private String captureId;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")

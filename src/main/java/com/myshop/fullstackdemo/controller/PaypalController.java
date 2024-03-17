@@ -22,6 +22,8 @@ import org.json.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,6 +72,17 @@ public class PaypalController {
         }
 
     }
+    private String getCaptureIdFromResponse(Object response) {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> responseMap = mapper.convertValue(response, Map.class);
+
+        List<Map<String, Object>> purchaseUnits = (List<Map<String, Object>>) responseMap.get("purchase_units");
+        Map<String, Object> firstPurchaseUnit = purchaseUnits.get(0);
+        Map<String, Object> payments = (Map<String, Object>) firstPurchaseUnit.get("payments");
+        List<Map<String, Object>> captures = (List<Map<String, Object>>) payments.get("captures");
+        Map<String, Object> firstCapture = captures.get(0);
+        return (String) firstCapture.get("id");
+    }
 
     @PostMapping("/orders/{orderId}/capture")
     public Object capturePayment(@PathVariable("orderId") String orderId){
@@ -92,7 +105,9 @@ public class PaypalController {
         );
         if (response.getStatusCode() == HttpStatus.CREATED) {
             LOGGER.log(Level.INFO, "ORDER CREATED");
-            Order order = orderService.captureOrder(orderId);
+            String captureId = getCaptureIdFromResponse(response.getBody());
+            System.out.println("captureId" + captureId);
+            Order order = orderService.captureOrder(orderId, captureId);
             return  response.getBody();
         } else {
             LOGGER.log(Level.INFO, "FAILED CREATING ORDER");
@@ -153,36 +168,67 @@ public class PaypalController {
     }
 
 
+    @PostMapping("/orders/{captureId}/refund")
+    public Object refundPayment(@PathVariable("captureId") String captureId){
+        String token = this.generateAccessToken();
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.set("Authorization", "Bearer " + token);
+        headers.add("Content-Type", "application/json");
+        headers.add("Accept", "application/json");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<?> entity = new HttpEntity<String>(null, headers);
+
+        ResponseEntity<Object> response = restTemplate.exchange(
+                BASE + "/v2/payments/captures/" + captureId + "/refund",
+                HttpMethod.POST,
+                entity,
+                Object.class
+        );
+        if (response.getStatusCode() == HttpStatus.CREATED) {
+            LOGGER.log(Level.INFO, "REFUND CREATED");
+            Order order = orderService.refundOrder(captureId);
+            return  response.getBody();
+        } else {
+            LOGGER.log(Level.INFO, "FAILED CREATING REFUND");
+            return "Unavailable to get CREATE A REFUND, STATUS CODE " + response.getStatusCode();
+        }
+
+    }
 
 
-//    @PostMapping("/payment/create")
-//    public ResponseEntity<?> createPayment(@RequestBody PaymentRequest paymentRequest) {
-//        try {
-//            Order order = orderService.createOrder(paymentRequest);
-//            String cancelUrl = "http://localhost:3000";
-//            String successUrl = "http://localhost:3000";
-//            Payment payment = paypalService.createPayment(paymentRequest.getAmount(), paymentRequest.getCurrency(),
-//                    "paypal", "sale", paymentRequest.getDescription(), cancelUrl, successUrl);
-//            String approvalUrl = null;
-//            for (Links link : payment.getLinks()) {
-//                if ("approval_url".equals(link.getRel())) {
-//                    approvalUrl = link.getHref();
-//                    break;
-//                }
-//            }
-//            if (approvalUrl != null) {
-//                // Nếu approval_url được tìm thấy, chuyển hướng người dùng đến đó
-//                PaymentResponse paymentInfo = new PaymentResponse(payment.getId(), payment.getPayer(), approvalUrl);
-//                return ResponseEntity.ok().body(paymentInfo);
-//            } else {
-//                // Nếu không tìm thấy approval_url, trả về lỗi
-//                return ResponseEntity.badRequest().body("Approval URL not found.");
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.badRequest().body("Payment creation failed.");
-//        }
-//    }
+    @DeleteMapping("/orders/{orderId}/cancelled")
+    public Object cancelOrder(@PathVariable("orderId") String orderCode){
+        String token = this.generateAccessToken();
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.set("Authorization", "Bearer " + token);
+        headers.add("Content-Type", "application/json");
+        headers.add("Accept", "application/json");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<?> entity = new HttpEntity<String>(null, headers);
+
+        ResponseEntity<Object> response = restTemplate.exchange(
+                BASE + "/v1/checkout/orders/" + orderCode,
+                HttpMethod.DELETE,
+                entity,
+                Object.class
+        );
+        if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
+            LOGGER.log(Level.INFO, "ORDER CANCELLED");
+            Order order = orderService.cancelOrder(orderCode);
+            return  response.getBody();
+        } else {
+            LOGGER.log(Level.INFO, "FAILED CANCELLING ORDER");
+            return "Unavailable to get CANCEL AN ORDER, STATUS CODE " + response.getStatusCode();
+        }
+
+    }
+
 
 
 
