@@ -61,4 +61,11 @@ public class OrderController {
         order.get().getOrderStatus().setStatus(Status.CANCELLED);
         return new ResponseEntity<>(orderRepository.save(order.get()), HttpStatus.OK);
     }
+
+
+    @DeleteMapping("/delete/{orderId}")
+    public ResponseEntity<Order> deleteOrder(@PathVariable long orderId) {
+        orderRepository.deleteById(orderId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

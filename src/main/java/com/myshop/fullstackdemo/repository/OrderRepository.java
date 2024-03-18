@@ -6,6 +6,8 @@ import com.myshop.fullstackdemo.model.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long>{
@@ -16,4 +18,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>{
     Order findByOrderCode(String orderCode);
 
     List<Order> findByOrderStatus_Status(Status status);
+
+    List<Order> findByOrderStatusStatusAndOrderDateBefore(Status status, LocalDateTime localDateTime);
+
 }

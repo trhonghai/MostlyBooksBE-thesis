@@ -4,8 +4,10 @@ import com.myshop.fullstackdemo.controller.PaymentRequest;
 import com.myshop.fullstackdemo.model.*;
 import com.myshop.fullstackdemo.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -91,6 +93,25 @@ public class OrderServiceImpl {
         order.getOrderStatus().setStatus(Status.CANCELLED);
         orderRepository.save(order);
         return order;
+    }
+
+
+
+    // Lập lịch cho việc xóa đơn hàng hàng ngày vào lúc 00:00
+    @Scheduled(cron = "0 0 0 * * *")
+    public void deleteCancelledOrders() {
+        // Lấy ngày hôm qua
+        LocalDate yesterday = LocalDate.now().minusDays(2);
+
+        // Lấy tất cả các đơn hàng có trạng thái "Cancelled" và được tạo trước ngày hôm qua
+        List<Order> cancelledOrders = orderRepository.findByOrderStatusStatusAndOrderDateBefore(Status.CANCELLED, yesterday.atStartOfDay());
+
+        // Xóa các đơn hàng
+        for (Order order : cancelledOrders) {
+            orderRepository.delete(order);
+        }
+
+        System.out.println("Cancelled orders older than 1 day have been deleted.");
     }
 
 }
