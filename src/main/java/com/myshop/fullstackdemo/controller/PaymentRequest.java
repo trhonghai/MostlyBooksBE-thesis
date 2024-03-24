@@ -18,3 +18,4 @@ public class PaymentRequest {
     private long customerId;
     private List<Long> orderDetailsId;
 }
+ 

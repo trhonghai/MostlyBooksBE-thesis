@@ -4,7 +4,9 @@ import com.myshop.fullstackdemo.exception.NotFoundException;
 import com.myshop.fullstackdemo.model.Address;
 import com.myshop.fullstackdemo.model.Customer;
 import com.myshop.fullstackdemo.repository.*;
+import com.myshop.fullstackdemo.service.AddressService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +18,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/provinces")
 @RequiredArgsConstructor
-public class ProvinceController {
+public class AddressController {
     private final ProvinceRepository provinceRepository;
     private final DistrictRepository districtRepository;
     private final WardRepository wardRepository;
     private final AddressRepository addressRepository;
     private final CustomerRepository customerRepository;
+    private final AddressService addressService;
     @GetMapping
     public List<Map<String, Object>> getAll(){
         return provinceRepository.findAll().stream()
@@ -100,6 +103,16 @@ public class ProvinceController {
         newAddress.setAddress(address.getAddress());
         addressRepository.save(newAddress);
         return ResponseEntity.ok(newAddress);
+    }
+
+    @PostMapping("/{addressId}/setDefaultForShopping")
+    public ResponseEntity<String> setDefaultForShopping(@PathVariable Long addressId, @RequestParam Long customerId) {
+        try {
+            addressService.setDefaultForShopping(addressId, customerId);
+            return ResponseEntity.ok("Default address for shopping updated successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 
 }

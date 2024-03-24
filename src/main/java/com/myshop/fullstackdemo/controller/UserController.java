@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
 public class UserController {
 
     @Autowired
@@ -36,11 +35,9 @@ public class UserController {
 
 
 @PostMapping(value = "/users")
-
-
     User newUser(@RequestParam String newUser,
                               @RequestPart("image") MultipartFile multipartFile  ) throws IOException, StripeException {
-        Stripe.apiKey = "sk_test_51OU2F8ImzaickdDEJwnDISY6ToIMgENs2mySnK4umkviZ3CbqMtoGDf4oQrlz14Id1N0oxXCnXwUBN6L1jQmNJXM00TILxNv2r";
+    Stripe.apiKey = "sk_test_51OU2F8ImzaickdDEJwnDISY6ToIMgENs2mySnK4umkviZ3CbqMtoGDf4oQrlz14Id1N0oxXCnXwUBN6L1jQmNJXM00TILxNv2r";
 
         byte[] img_data;
 

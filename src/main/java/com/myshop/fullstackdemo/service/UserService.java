@@ -31,10 +31,8 @@ UserService {
     }
 
     public boolean isEmailUnique(String email){
-        User existingUser = userRepo.findByEmail(email).orElseThrow();
-
-        // Kiểm tra xem có user nào có email giống nhau không
-        return existingUser == null;
+        User user = userRepo.findByEmail(email).orElse(null);
+        return user == null;
     }
 
     public User get(Long id) throws UserNotFoundException{

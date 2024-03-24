@@ -37,6 +37,8 @@ public class WebSecurityConfig {
                         authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                                 .requestMatchers("/users/**").permitAll()
                                 .requestMatchers("/categories/**").permitAll()
+                                .requestMatchers("/publisher/**").permitAll()
+                                .requestMatchers("/authour/**").permitAll()
                                 .requestMatchers("/roles").permitAll()
                                 .requestMatchers("/books/**").permitAll()
                                 .requestMatchers("/books/new").hasRole("Admin")

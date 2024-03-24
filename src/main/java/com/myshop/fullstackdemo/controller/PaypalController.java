@@ -118,7 +118,7 @@ public class PaypalController {
 
     @PostMapping("/orders/create")
     public Object createOrder (@RequestBody PaymentRequest paymentRequest) throws IOException {
-        System.out.println("paymentRequest" + paymentRequest);
+        String  URL_SUCCESS = "http://localhost:3000";
         String token = this.generateAccessToken();
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -148,19 +148,12 @@ public class PaypalController {
 
         if (response.getStatusCode() == HttpStatus.CREATED) {
             LOGGER.log(Level.INFO, "ORDER CREATED");
-
             System.out.println("response" + response.getBody().toString());
             ObjectMapper mapper = new ObjectMapper();
             String jsonString = mapper.writeValueAsString( response.getBody());
-            System.out.println("jsonString" + jsonString);
-
             String orderId = new JSONObject(jsonString).getString("id");
-            System.out.println("orderId" + orderId);
-
-//
-
             Order order = orderService.createOrder(paymentRequest, orderId);
-            return response.getBody(); // Trả về nội dung của phản hồi từ PayPal
+            return  response.getBody();
         } else {
             LOGGER.log(Level.INFO, "FAILED CREATING ORDER");
             return "Unavailable to get CREATE AN ORDER, STATUS CODE " + response.getStatusCode();
