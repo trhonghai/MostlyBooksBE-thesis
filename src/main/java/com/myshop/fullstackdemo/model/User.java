@@ -1,5 +1,6 @@
 package com.myshop.fullstackdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,6 +42,7 @@ public class User implements UserDetails {
 
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<Role> roles = this.roles;
         List<SimpleGrantedAuthority> authories = new ArrayList<>();
@@ -51,33 +53,41 @@ public class User implements UserDetails {
         return authories;
     }
 
-
     @Override
+
     public String getPassword() {
         return this.password;
     }
 
+
     @Override
+
+    @JsonIgnore
     public String getUsername() {
         return this.email;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+//    @Override
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return this.enabled;
     }

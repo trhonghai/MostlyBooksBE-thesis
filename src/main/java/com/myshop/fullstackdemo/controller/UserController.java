@@ -1,6 +1,5 @@
 package com.myshop.fullstackdemo.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myshop.fullstackdemo.exception.UserNotFoundException;
 import com.stripe.Stripe;
@@ -9,7 +8,7 @@ import com.stripe.model.File;
 import com.stripe.model.FileLink;
 import com.stripe.param.FileCreateParams;
 import com.stripe.param.FileLinkCreateParams;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.ResponseEntity;
 import com.myshop.fullstackdemo.model.User;
 import com.myshop.fullstackdemo.repository.RoleRepository;
 import com.myshop.fullstackdemo.repository.UserRepository;
@@ -18,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -91,15 +91,77 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    User updateUser(@RequestBody User newUser, @PathVariable Long id){
-        return userRepository.findById(id)
+    public ResponseEntity<User> updateUser(@RequestParam String newUser,
+                                           @PathVariable Long id,
+                                           @RequestPart(value = "image", required = false)
+                                               MultipartFile multipartFile) throws IOException ,StripeException {
+        System.out.println("newUser = " + newUser);
+    ObjectMapper objectMapper = new ObjectMapper();
+        User newUserEntity = objectMapper.readValue(newUser, User.class);
+    return userRepository.findById(id)
                 .map(user -> {
-                    user.setLastName(newUser.getLastName());
-                    user.setFirstName(newUser.getFirstName());
-                    user.setEmail(newUser.getEmail());
-                    user.setRoles(newUser.getRoles());
-                    user.setEnabled(newUser.isEnabled());
-                    return userRepository.save(user);
+                    user.setLastName(newUserEntity.getLastName());
+                    user.setFirstName(newUserEntity.getFirstName());
+                    user.setEmail(newUserEntity.getEmail());
+                    user.setRoles(newUserEntity.getRoles());
+                    user.setEnabled(newUserEntity.isEnabled());
+                    if(multipartFile!=null){
+                        Stripe.apiKey = "sk_test_51OU2F8ImzaickdDEJwnDISY6ToIMgENs2mySnK4umkviZ3CbqMtoGDf4oQrlz14Id1N0oxXCnXwUBN6L1jQmNJXM00TILxNv2r";
+                        byte[] img_data;
+                        try {
+                            img_data = multipartFile.getBytes();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        String currentWorkingDirectory = System.getProperty("user.dir");
+                        System.out.println("name="+multipartFile.getOriginalFilename());
+                        String filePath = currentWorkingDirectory + "/"+multipartFile.getOriginalFilename();
+                        java.io.File fileNew = new java.io.File(filePath);
+
+                        FileOutputStream fileOutputStream;
+                        try {
+                            fileOutputStream = new FileOutputStream(filePath);
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                        try {
+                            fileOutputStream.write(img_data);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        try {
+                            fileOutputStream.close();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        FileCreateParams fileCreateParams = FileCreateParams.builder()
+                                .setFile(fileNew)
+                                .setPurpose(FileCreateParams.Purpose.DISPUTE_EVIDENCE)
+                                .build();
+                        File file = null;
+                        try {
+                            file = File.create(fileCreateParams);
+                        } catch (StripeException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        FileLinkCreateParams params =
+                                FileLinkCreateParams.builder()
+                                        .setFile(file.getId())
+                                        .build();
+                        FileLink fileLink = null;
+                        try {
+                            fileLink = FileLink.create(params);
+                        } catch (StripeException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        fileNew.delete();
+                        user.setPhotos(fileLink.getUrl());
+
+                    }
+                    return ResponseEntity.ok(userRepository.save(user));
                 }).orElseThrow(()->new UserNotFoundException(id));
     }
     @DeleteMapping("/users/{id}")
