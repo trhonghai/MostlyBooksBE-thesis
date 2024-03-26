@@ -11,6 +11,11 @@ import java.util.List;
 public class CategoryService {
     @Autowired
     private CategoryRepository repo;
+
+    public Category newCategory( Category category){
+        category.setName(category.getName());
+        return repo.save(category);
+    }
     public List<Category> getAllCategories(){
         return repo.findAll();
     }

@@ -22,7 +22,7 @@ public class CategoryRepositoryTest {
     @Test
     public void testCreateRootCategory(){
         Category category = new Category();
-        category.setName("Tiểu thiết");
+        category.setName("Ngôn tình");
         Category savedCategory=repo.save(category);
         Assertions.assertThat(savedCategory.getId()).isGreaterThan(0);
     }

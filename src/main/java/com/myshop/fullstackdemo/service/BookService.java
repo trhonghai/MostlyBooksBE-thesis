@@ -6,7 +6,6 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.File;
 import com.stripe.model.FileLink;
-import com.stripe.param.FileCreateParams;
 import com.stripe.param.FileLinkCreateParams;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -73,6 +72,11 @@ public class BookService {
         public DetailsImage createDetailImage(DetailsImage detailsImage){
             return detailsImageRepository.save(detailsImage);
         }
+
+    public List<Book> filterBooks(Float minPrice, Float maxPrice, String categoryName, String publisherName, String cover) {
+        // Gọi phương thức tương ứng trong repository để lọc sách
+        return bookRepository.findBooksByFilters(minPrice, maxPrice, categoryName, publisherName, cover);
+    }
 
 
 

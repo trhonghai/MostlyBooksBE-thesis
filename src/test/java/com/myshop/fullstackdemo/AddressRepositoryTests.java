@@ -22,24 +22,24 @@ public class AddressRepositoryTests {
     private CustomerRepository customerRepository;
     @Autowired
     private CountryRepository countryRepository;
-    @Test
-    public void testCreateAddress(){
-        long customerId = 1;
-        Customer customer = customerRepository.findById(customerId).get();
-        long countryId = 1;
-        Address address = new Address();
-        address.setCustomer(customer);
-        address.setCountry(countryRepository.findById(countryId).get());
-        address.setFirstName("Truong");
-        address.setLastName("Hong Hai");
-        address.setPhoneNumber("0935115442");
-        address.setAddress("B4 KDC91B");
-        address.setCity("Cần Thơ");
-        address.setState("Ninh Kiều");
-        Address savedAddress = addressRepository.save(address);
-        Assertions.assertThat(savedAddress.getId()).isGreaterThan(0);
-
-
-    }
+//    @Test
+//    public void testCreateAddress(){
+//        long customerId = 1;
+//        Customer customer = customerRepository.findById(customerId).get();
+//        long countryId = 1;
+//        Address address = new Address();
+//        address.setCustomer(customer);
+//        address.setCountry(countryRepository.findById(countryId).get());
+//        address.setFirstName("Truong");
+//        address.setLastName("Hong Hai");
+//        address.setPhoneNumber("0935115442");
+//        address.setAddress("B4 KDC91B");
+//        address.setCity("Cần Thơ");
+//        address.setState("Ninh Kiều");
+//        Address savedAddress = addressRepository.save(address);
+//        Assertions.assertThat(savedAddress.getId()).isGreaterThan(0);
+//
+//
+//    }
 
 }

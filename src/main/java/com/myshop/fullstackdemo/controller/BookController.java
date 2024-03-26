@@ -29,7 +29,7 @@ import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
-
+@RequestMapping("/books")
 public class BookController {
     private final BookService bookService;
     private final BookRepository bookRepository;
@@ -38,18 +38,18 @@ public class BookController {
     private final PublisherRepository publisherRepository;
 
 
-    @GetMapping("/books")
+    @GetMapping
     ResponseEntity<List<Book>> getAllBooks(){
         return new ResponseEntity<>(bookService.listAllBooks(), HttpStatus.OK);
     }
 
-    @GetMapping("/books/{id}")
+    @GetMapping("/{id}")
     ResponseEntity<Book> getBookById(@PathVariable Long id){
         Book book = bookService.getABook(id);
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
-    @PostMapping("/books/new")
+    @PostMapping("/new")
     public ResponseEntity <Book> createBook(@RequestParam String book, @RequestPart("image") MultipartFile multipartFile) throws IOException, StripeException {
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.println("book" + book);
@@ -106,7 +106,7 @@ public class BookController {
         return new ResponseEntity<>(bookEntity, HttpStatus.CREATED);
     }
 
-    @PostMapping("books/detailImages/{id}")
+    @PostMapping("/detailImages/{id}")
     public ResponseEntity<DetailsImage> createImagesBook(@PathVariable Long id,@RequestBody DetailsImage detailsImageRe ){
         Book book = bookRepository.findById(id).get();
         DetailsImage detailsImage = new DetailsImage();
@@ -119,7 +119,7 @@ public class BookController {
         return ResponseEntity.ok(detailsImage);
     }
 
-    @PutMapping("/books/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Book> updateBook(
             @PathVariable Long id,
             @RequestParam String bookUpdate,
@@ -205,5 +205,17 @@ public class BookController {
                     return ResponseEntity.ok(bookRepository.save(existingBook));
                 })
                 .orElse(ResponseEntity.notFound().build()); // Trả về 404 nếu không tìm thấy sách
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<Book>> filterBook(
+            @RequestParam(value = "minPrice",required = false) Float minPrice,
+            @RequestParam(value = "maxPrice",required = false) Float maxPrice,
+            @RequestParam(value = "categoryName",required = false) String categoryName,
+            @RequestParam(value="publisherName",required = false) String publisherName,
+            @RequestParam(value="coverType",required = false) String cover
+    ) {
+        List<Book> filteredBooks = bookService.filterBooks(minPrice, maxPrice, categoryName, publisherName, cover);
+        return  ResponseEntity.ok(filteredBooks);
     }
 }
