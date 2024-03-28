@@ -15,4 +15,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "AND (:coverType IS NULL OR b.cover = :coverType OR b.cover IS NULL OR b.cover = '')")
     List<Book> findBooksByFilters(Float minPrice, Float maxPrice, String categoryName, String publisherName, String coverType);
 
+
+    @Query("SELECT p FROM Book p WHERE " +
+                  "p.name LIKE CONCAT('%',:query, '%')" +
+                  "Or p.description LIKE CONCAT('%', :query, '%')")
+    List<Book> searchProducts(String query);
 }

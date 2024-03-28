@@ -77,6 +77,12 @@ public class BookService {
         // Gọi phương thức tương ứng trong repository để lọc sách
         return bookRepository.findBooksByFilters(minPrice, maxPrice, categoryName, publisherName, cover);
     }
+    public List<Book> searchBooks(String query) {
+        List<Book> books = bookRepository.searchProducts(query);
+        return books;
+    }
+
+
 
 
 

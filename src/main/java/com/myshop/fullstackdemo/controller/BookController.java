@@ -218,4 +218,16 @@ public class BookController {
         List<Book> filteredBooks = bookService.filterBooks(minPrice, maxPrice, categoryName, publisherName, cover);
         return  ResponseEntity.ok(filteredBooks);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Book>> searchBook(@RequestParam(value = "query", required = false) String query) {
+        if (query == null || query.isEmpty()) {
+            // Handle missing or empty query parameter
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<Book> books = bookService.searchBooks(query);
+        return ResponseEntity.ok(books);
+    }
+
 }

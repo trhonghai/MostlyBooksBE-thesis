@@ -30,14 +30,14 @@ public class ReviewsRepositoryTests {
 
     @Test
     public void testCreateReviews(){
-        long bookId = 1;
+        long bookId = 9;
         Book book = bookRepository.findById(bookId).get();
-        long customerId = 5;
+        long customerId = 302;
         Customer customer = customerRepository.findById(customerId).get();
 
         Reviews review = new Reviews();
         review.setComment("Perfect for my needs. Loving it!");
-        review.setRating(5);
+        review.setRating(4);
         review.setDate(new Date());
         review.setBook(book);
         review.setCustomer(customer);

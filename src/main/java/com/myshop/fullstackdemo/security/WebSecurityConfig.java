@@ -41,6 +41,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/authour/**").permitAll()
                                 .requestMatchers("/roles").permitAll()
                                 .requestMatchers("/books/**").permitAll()
+                                .requestMatchers("/reviews/**").permitAll()
                                 .requestMatchers("/books/new").hasRole("Admin")
 //                                .requestMatchers("/books/detailImages/**").permitAll()
                                 .requestMatchers("/api/users/authentication").permitAll()
