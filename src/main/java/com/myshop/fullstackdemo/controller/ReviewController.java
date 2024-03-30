@@ -29,6 +29,9 @@ public class ReviewController {
         review.setBook(book);
         reviewService.createReview(review);
 
+        int totalReviewCount = reviewService.totalReviewCount(bookId);
+        book.setReviewCount(totalReviewCount + 1);
+
         // Cập nhật lại rating cho sách
         double newRating = reviewService.calculateRating(bookId);
         System.out.println("newRating = " + newRating);
@@ -43,5 +46,7 @@ public class ReviewController {
 
         return ResponseEntity.ok("Review created and book rating updated");
     }
+
+
 
 }

@@ -31,4 +31,9 @@ public class ReviewService {
         }
         return totalRating / reviews.size();
     }
+
+    public Integer totalReviewCount (Long bookId) {
+        List<Reviews> reviews = reviewsRepository.findByBookId(bookId);
+        return reviews.size();
+    }
 }

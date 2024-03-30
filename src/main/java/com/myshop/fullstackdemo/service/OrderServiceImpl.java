@@ -21,6 +21,7 @@ public class OrderServiceImpl {
     private final OrderStatusRepository orderStatusRepository;
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
+    private final BookRepository bookRepository;
 
     public Order createOrder(PaymentRequest paymentRequest, String orderId) {
 
@@ -53,10 +54,15 @@ public class OrderServiceImpl {
         for (Long orderDetailId : paymentRequest.getOrderDetailsId()) {
             OrderDetail orderDetail = orderDetailRepository.findById(orderDetailId)
                     .orElseThrow(() -> new IllegalArgumentException("Order detail not found with id: " + orderDetailId));
+            Book book = orderDetail.getBook();
+            Long quantity = orderDetail.getQuantity();
+            book.setInventory(book.getInventory() - quantity);
+            bookRepository.save(book);
             orderDetail.setOrder(order);
             orderDetailsList.add(orderDetail);
             orderDetailRepository.save(orderDetail);
         }
+
 
         double Amount = orderDetailsList.stream().mapToDouble(orderDetail -> orderDetail.getPrice() * orderDetail.getQuantity()).sum();
         order.setOrderCode(orderId);

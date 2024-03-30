@@ -19,7 +19,7 @@ public class AuthourRepositoryTests {
     @Test
     public void testCreateAuthour(){
         Authour authour = new Authour();
-        authour.setName("Châu Sa Đáy Mắt");
+        authour.setName("Andrea Hirata");
         Authour savedAuthour = authourRepository.save(authour);
         Assertions.assertThat(savedAuthour.getId()).isGreaterThan(0);
     }

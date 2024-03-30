@@ -1,5 +1,6 @@
 package com.myshop.fullstackdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,5 +56,10 @@ public class Book {
 
     @OneToMany(mappedBy = "book")
     private List<Reviews> reviews;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Set<DiscountDetail> discountDetails = new HashSet<>();
+
 
 }

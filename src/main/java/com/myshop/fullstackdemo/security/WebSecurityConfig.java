@@ -43,6 +43,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/books/**").permitAll()
                                 .requestMatchers("/reviews/**").permitAll()
                                 .requestMatchers("/books/new").hasRole("Admin")
+                                .requestMatchers("/discount/**").permitAll()
 //                                .requestMatchers("/books/detailImages/**").permitAll()
                                 .requestMatchers("/api/users/authentication").permitAll()
                                 .requestMatchers("/user-cart/**").permitAll()

@@ -101,7 +101,7 @@ public class AuthServiceImpl implements AuthService {
         user.setRoles(roles);
 
         user.setRoles(roles);
-        user.setEnabled(registerRequest.isEnabled() == false ? registerRequest.isEnabled() : true);
+        user.setEnabled(registerRequest.isEnabled() == false ? true : registerRequest.isEnabled());
         User savedUser = userRepository.save(user);
 
 
