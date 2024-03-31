@@ -158,20 +158,19 @@ public class CartController {
         return ResponseEntity.ok(newOrderDetails);
     }
 
-//    @PostMapping("/checkout-items")
-//    public ResponseEntity<List<OrderDetail>> getAList(@RequestBody List<OrderDetail> OrderDetailsId){
-//        System.out.println("cartList = " + OrderDetailsId);
-//        List<OrderDetail> orderDetails = new ArrayList<>();
-//        OrderDetailsId.forEach(cartItem -> {
-//           OrderDetail orderDetail = orderDetailRepository.findById(cartItem.getCartId()).orElseThrow(() -> new NotFoundException("OrderDetail " +
-//                   "not found, " +
-//                   "id=" + cartItem.getCartId()));
-//           orderDetail.getCart().removeOrderDetails(orderDetail);
-//           orderDetails.add(orderDetail);
-//        });
-//        return ResponseEntity.ok().body(orderDetails);
-//    }
-
+    @GetMapping("/get-total-cart")
+    public ResponseEntity<Integer> getTotalCart(@RequestParam("cart") Long cartId){
+        Cart cart = cartRepository.findById(cartId).orElseThrow( ()-> new NotFoundException("cart " +
+                "not found, " +
+                "id="+cartId));
+        List<OrderDetail> orderDetails = cart.getOrderDetail();
+        double total = 0;
+        for (OrderDetail o:
+                orderDetails) {
+            total += o.getQuantity();
+        }
+        return ResponseEntity.ok((int) total);
+    }
 
 
 }

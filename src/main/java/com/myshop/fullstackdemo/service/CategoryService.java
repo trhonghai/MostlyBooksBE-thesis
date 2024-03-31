@@ -16,6 +16,12 @@ public class CategoryService {
         category.setName(category.getName());
         return repo.save(category);
     }
+
+    public Category updateCategory(Category category, Long id){
+        Category categoryToUpdate = repo.findById(Math.toIntExact(id)).orElseThrow();
+        categoryToUpdate.setName(category.getName());
+        return repo.save(categoryToUpdate);
+    }
     public List<Category> getAllCategories(){
         return repo.findAll();
     }
