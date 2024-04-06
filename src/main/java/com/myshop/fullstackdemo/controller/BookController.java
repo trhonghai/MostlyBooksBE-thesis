@@ -239,4 +239,17 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
+    @GetMapping("/api/books/recommendations/{ids}")
+    public ResponseEntity<List<Book>> getBooksByIds(@PathVariable List<Long> ids) {
+        List<Book> recommendedBooks = new ArrayList<>();
+
+        for (Long id : ids) {
+            Book book = bookRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid book Id: " + id));
+            recommendedBooks.add(book);
+        }
+
+        return ResponseEntity.ok(recommendedBooks);
+    }
+
 }
