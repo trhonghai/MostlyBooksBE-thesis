@@ -127,11 +127,20 @@ public class BookController {
     ) throws IOException, StripeException {
         ObjectMapper objectMapper = new ObjectMapper();
         Book updatedBook = objectMapper.readValue(bookUpdate, Book.class);
+        Authour authour = authourRepository.findById(Math.toIntExact(updatedBook.getAuthour().getId()))
+                .orElseThrow(() -> new IllegalArgumentException("Invalid author Id"));
+        Category category = categoryRepository.findById(Math.toIntExact(updatedBook.getCategory().getId()))
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category Id"));
+        Publisher publisher = publisherRepository.findById(Math.toIntExact(updatedBook.getPublisher().getId()))
+                .orElseThrow(() -> new IllegalArgumentException("Invalid publisher Id"));
 
         // Tìm sách cần cập nhật trong cơ sở dữ liệu
         return bookRepository.findById(id)
                 .map(existingBook -> {
                     // Cập nhật thông tin sách
+                    existingBook.setAuthour(authour);
+                    existingBook.setCategory(category);
+                    existingBook.setPublisher(publisher);
                     existingBook.setName(updatedBook.getName());
                     existingBook.setDescription(updatedBook.getDescription());
                     existingBook.setPrice(updatedBook.getPrice());

@@ -2,6 +2,7 @@ package com.myshop.fullstackdemo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.stripe.model.Discount;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,6 +61,7 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     @JsonBackReference
     private Set<DiscountDetail> discountDetails = new HashSet<>();
+
 
 
 }
