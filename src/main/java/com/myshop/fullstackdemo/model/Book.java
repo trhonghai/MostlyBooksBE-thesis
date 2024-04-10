@@ -27,6 +27,7 @@ public class Book {
     @Column(length = 2000)
     private String description;
     private float price;
+    private float discountedPrice;
     private String img;
     private Long pages;
     private String ISBN_10;

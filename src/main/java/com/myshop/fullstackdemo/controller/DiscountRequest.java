@@ -16,11 +16,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DiscountRequest {
+
     private String discountName;
+    private String discountCode;
     private double discountPercentage;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date startDate;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date endDate;
+    private List<Long> bookIds;
 
 }

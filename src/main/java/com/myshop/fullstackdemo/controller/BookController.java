@@ -1,11 +1,9 @@
 package com.myshop.fullstackdemo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.myshop.fullstackdemo.exception.NotFoundException;
 import com.myshop.fullstackdemo.model.*;
-import com.myshop.fullstackdemo.repository.AuthourRepository;
-import com.myshop.fullstackdemo.repository.BookRepository;
-import com.myshop.fullstackdemo.repository.CategoryRepository;
-import com.myshop.fullstackdemo.repository.PublisherRepository;
+import com.myshop.fullstackdemo.repository.*;
 import com.myshop.fullstackdemo.service.BookService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -36,16 +34,47 @@ public class BookController {
     private final AuthourRepository authourRepository;
     private final CategoryRepository categoryRepository;
     private final PublisherRepository publisherRepository;
+    private final DiscountDetailRepository discountDetailRepository;
 
 
     @GetMapping
     ResponseEntity<List<Book>> getAllBooks(){
-        return new ResponseEntity<>(bookService.listAllBooks(), HttpStatus.OK);
+        List<Book> books = bookService.listAllBooks();
+        List<Book> booksWithPrices = new ArrayList<>();
+
+        for (Book book : books) {
+            DiscountDetail discountDetail = discountDetailRepository.findDiscountDetailByBookId(book.getId());
+            double currentPrice;
+            if (discountDetail != null) {
+                currentPrice = discountDetail.getCurrentPrice();
+            } else {
+                currentPrice = book.getPrice();
+            }
+            book.setDiscountedPrice((float) currentPrice);
+            booksWithPrices.add(book);
+        }
+
+        return new ResponseEntity<>(booksWithPrices, HttpStatus.OK);
     }
+
 
     @GetMapping("/{id}")
     ResponseEntity<Book> getBookById(@PathVariable Long id){
         Book book = bookService.getABook(id);
+        if (book == null) {
+            // Trả về 404 Not Found nếu không tìm thấy sách
+            throw new NotFoundException("Book not found with id: " + id);
+        }
+        DiscountDetail discountDetail = discountDetailRepository.findDiscountDetailByBookId(id);
+        float price;
+        if(discountDetail != null){
+            price = (float) discountDetail.getCurrentPrice();
+        }
+        else {
+            price = book.getPrice();
+        }
+        book.setPrice(price);
+
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
 

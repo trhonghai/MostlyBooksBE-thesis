@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -24,6 +25,7 @@ public class DiscountDetail {
         @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
         private Date endDate;
         private double discountPercentage;
+        private String discountCode;
 
         @ManyToOne
         @JoinColumn(name = "discount_id")
@@ -33,6 +35,18 @@ public class DiscountDetail {
         @JoinColumn(name = "book_id")
         private Book book;
 
+        public double getCurrentPrice(){
+                if (startDate != null && endDate != null) {
+                        Date currentDate = new Date();
+                        if (currentDate.after(startDate) && currentDate.before(endDate)) {
+                                // Nếu hiện tại nằm trong thời gian giảm giá, tính giá đã giảm
+                                double discountedPrice = book.getPrice() * (1 - (discountPercentage / 100));
+                                return discountedPrice;
+                        }
+                }
+                // Nếu không có hoặc đã hết thời gian giảm giá, trả về giá gốc
+                return book.getPrice();
+        }
 
 
 }

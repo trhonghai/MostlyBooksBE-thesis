@@ -1,6 +1,7 @@
 package com.myshop.fullstackdemo.repository;
 
 import com.myshop.fullstackdemo.model.Book;
+import com.myshop.fullstackdemo.model.DiscountDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -20,4 +21,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
                   "p.name LIKE CONCAT('%',:query, '%')" +
                   "Or p.description LIKE CONCAT('%', :query, '%')")
     List<Book> searchProducts(String query);
+
+
 }

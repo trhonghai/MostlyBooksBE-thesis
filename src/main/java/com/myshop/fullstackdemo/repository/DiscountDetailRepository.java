@@ -6,5 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface DiscountDetailRepository extends JpaRepository<DiscountDetail, Long> {
-   List<DiscountDetail> findDiscountDetailByBookId(Long id);
+   DiscountDetail findDiscountDetailByBookId(Long id);
+
+    DiscountDetail findDiscountDetailByDiscountId(Long id);
 }

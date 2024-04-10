@@ -19,7 +19,7 @@ public class JwtService {
 
     //get secret key from http://network-logix.net/ or ...
     public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
-    public static final long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
+    public static final long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60; // 1 hour
     public static final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7; // 7 days
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

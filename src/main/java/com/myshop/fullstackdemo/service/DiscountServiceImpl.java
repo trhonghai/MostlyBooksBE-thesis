@@ -1,5 +1,6 @@
 package com.myshop.fullstackdemo.service;
 
+import com.myshop.fullstackdemo.dto.DiscountDTO;
 import com.myshop.fullstackdemo.model.Book;
 import com.myshop.fullstackdemo.model.Discount;
 import com.myshop.fullstackdemo.model.DiscountDetail;
@@ -8,6 +9,9 @@ import com.myshop.fullstackdemo.repository.DiscountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
