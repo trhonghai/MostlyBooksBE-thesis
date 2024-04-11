@@ -43,7 +43,7 @@ public class BookController {
         List<Book> booksWithPrices = new ArrayList<>();
 
         for (Book book : books) {
-            DiscountDetail discountDetail = discountDetailRepository.findDiscountDetailByBookId(book.getId());
+            DiscountDetail discountDetail = (DiscountDetail) discountDetailRepository.findDiscountDetailByBookId(book.getId());
             double currentPrice;
             if (discountDetail != null) {
                 currentPrice = discountDetail.getCurrentPrice();
@@ -65,7 +65,7 @@ public class BookController {
             // Trả về 404 Not Found nếu không tìm thấy sách
             throw new NotFoundException("Book not found with id: " + id);
         }
-        DiscountDetail discountDetail = discountDetailRepository.findDiscountDetailByBookId(id);
+        DiscountDetail discountDetail = (DiscountDetail) discountDetailRepository.findDiscountDetailByBookId(id);
         float price;
         if(discountDetail != null){
             price = (float) discountDetail.getCurrentPrice();

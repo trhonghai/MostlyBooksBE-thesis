@@ -3,10 +3,7 @@ package com.myshop.fullstackdemo.controller;
 import com.myshop.fullstackdemo.model.*;
 import com.myshop.fullstackdemo.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +57,16 @@ public class PaymentController {
         orderRepository.save(order);
 
         return order;
+    }
+
+    @PutMapping("/delivery/{orderId}")
+    public Order deliveryOrder(@PathVariable long orderId){
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if(order == null){
+            throw new IllegalArgumentException("Order not found with id: " + orderId);
+        }
+        order.getOrderStatus().setStatus(Status.SHIPPED);
+        return orderRepository.save(order);
     }
 
 }

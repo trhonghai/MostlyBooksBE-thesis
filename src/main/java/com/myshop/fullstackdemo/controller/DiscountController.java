@@ -67,19 +67,22 @@ public class DiscountController {
     @GetMapping("/{id}")
     public ResponseEntity<List<DiscountDetail>> getDiscount(@PathVariable Long id){
         try{
-            DiscountDetail discountDetail = discountDetailRepository.findDiscountDetailByBookId(id);
-            return new ResponseEntity<>(List.of(discountDetail), HttpStatus.OK);
+            DiscountDetail discountDetail = (DiscountDetail) discountDetailRepository.findDiscountDetailByBookId(id);
+            return new  ResponseEntity<>(Collections.singletonList(discountDetail), HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-//    @GetMapping("/all")
-//    public ResponseEntity<List<DiscountDTO>> getAllDiscounts() {
-//        List<DiscountDTO> discounts = discountService.getAllDiscounts();
-//
-//        return new ResponseEntity<>(discounts, HttpStatus.OK);
-//    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteDiscount(@PathVariable Long id) {
+        try {
+            discountDetailRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/all")
     public ResponseEntity<List<DiscountDTO>> getAllDiscounts() {
@@ -94,35 +97,45 @@ public class DiscountController {
 
     private DiscountDTO convertToDTO(DiscountDetail discountDetail) {
         DiscountDTO discountDTO = new DiscountDTO();
+        discountDTO.setId(discountDetail.getId());
         discountDTO.setDiscountCode(discountDetail.getDiscountCode());
         discountDTO.setDiscountName(discountDetail.getDiscount().getName());
         discountDTO.setDiscountPercentage(discountDetail.getDiscountPercentage());
         discountDTO.setStartDate(discountDetail.getStartDate().toString());
         discountDTO.setEndDate(discountDetail.getEndDate().toString());
-        discountDTO.setBookIds(Collections.singletonList(discountDetail.getBook().getId()));
+        discountDTO.setBook(discountDetail.getBook());
         // Thêm các thông tin khác cần thiết từ đối tượng DiscountDetail vào DiscountDTO
 
         return discountDTO;
     }
 
-//    @PutMapping("/update/{id}")
-//    public ResponseEntity<Discount> updateDiscount(@RequestBody DiscountRequest discountRequest, @PathVariable Long id){
-//        try{
-//            Discount discount = discountRepository.findById(id).get();
-//            discount.setName(discountRequest.getDiscountName());
-//            DiscountDetail discountDetail = discountDetailRepository.findDiscountDetailByDiscountId(id);
-//            discountDetail.setDiscountPercentage(discountRequest.getDiscountPercentage());
-//            discountDetail.setStartDate(discountRequest.getStartDate());
-//            discountDetail.setEndDate(discountRequest.getEndDate());
-//            discountDetail.setDiscount(discount);
-//            discountService.updateDiscount(discount, discountDetail);
-//            return new ResponseEntity<>(discount, HttpStatus.OK);
-//        } catch (Exception e){
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<DiscountDetail> updateDiscount(@PathVariable Long id, @RequestBody DiscountRequest discountRequest) {
+        DiscountDetail discountDetail = discountDetailRepository.findById(id).orElse(null);
+        if (discountDetail == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<Long> bookIds = discountRequest.getBookIds();
+        for (Long bookId : bookIds) {
+            // Tạo đối tượng DiscountDetail từ dữ liệu trong DiscountRequest
+            discountDetail.setStartDate(discountRequest.getStartDate());
+            discountDetail.setEndDate(discountRequest.getEndDate());
+            discountDetail.setDiscountPercentage(discountRequest.getDiscountPercentage());
+            discountDetail.setDiscountCode(discountRequest.getDiscountCode());
+            discountDetail.setDiscountCode(discountRequest.getDiscountCode());
 
+            // Lấy thông tin của quyển sách từ bookRepository
+            Book book = bookRepository.findById(bookId).orElse(null);
+            if (book != null) {
+                discountDetail.setBook(book);
+                // Tạo chiết khấu với chi tiết đã được thiết lập
+            }
+            discountDetailRepository.save(discountDetail);
+            return new ResponseEntity<>(discountDetail, HttpStatus.OK);
+        }
 
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 
 }
