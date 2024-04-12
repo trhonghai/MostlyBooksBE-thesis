@@ -69,4 +69,34 @@ public class PaymentController {
         return orderRepository.save(order);
     }
 
+    @PutMapping("delivered/{orderId}")
+    public Order deliveredOrder(@PathVariable long orderId){
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if(order == null){
+            throw new IllegalArgumentException("Order not found with id: " + orderId);
+        }
+        order.getOrderStatus().setStatus(Status.DELIVERED);
+        return orderRepository.save(order);
+    }
+
+    @PutMapping("/capture-cash-on-delivery/{id}")
+    public Order captureCashOnDelivery(@PathVariable long id){
+        Order order = orderRepository.findById(id).orElse(null);
+        if(order == null){
+            throw new IllegalArgumentException("Order not found with id: " + id);
+        }
+        order.getOrderStatus().setStatus(Status.CAPTURED);
+        return orderRepository.save(order);
+    }
+
+    @PutMapping("/cancel-cash-on-delivery/{id}")
+    public Order cancelCashOnDelivery(@PathVariable long id){
+        Order order = orderRepository.findById(id).orElse(null);
+        if(order == null){
+            throw new IllegalArgumentException("Order not found with id: " + id);
+        }
+        order.getOrderStatus().setStatus(Status.CANCELLED);
+        return orderRepository.save(order);
+    }
+
 }
