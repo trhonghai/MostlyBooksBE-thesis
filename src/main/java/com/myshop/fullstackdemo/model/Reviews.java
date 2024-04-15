@@ -26,6 +26,7 @@ public class Reviews {
     private float rating;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date date;
+    private int like;
 
     @ManyToOne
     @JoinColumn(name="book_id")

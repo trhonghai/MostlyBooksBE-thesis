@@ -58,7 +58,7 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<DetailsImage> images;
 
-//    @OneToMany(mappedBy = "book")
+//    @OneToMany(mappedBy = "book" , cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //    @JsonBackReference
 ////    @JsonIgnore
 //    private List<Reviews> reviews;

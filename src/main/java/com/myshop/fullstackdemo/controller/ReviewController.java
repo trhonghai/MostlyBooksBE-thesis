@@ -65,5 +65,17 @@ public class ReviewController {
         return ResponseEntity.ok("Review not found");
     }
 
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
+        reviewsRepository.deleteById(reviewId);
+        return ResponseEntity.ok("Review deleted");
+    }
+
+    @GetMapping("/books/{bookId}")
+    public ResponseEntity<?> getReviewsByBookId(@PathVariable Long bookId) {
+        return ResponseEntity.ok(reviewsRepository.findByBookId(bookId));
+    }
+
+
 
 }
