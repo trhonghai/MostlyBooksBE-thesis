@@ -1,7 +1,9 @@
 package com.myshop.fullstackdemo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.stripe.model.Discount;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -56,8 +58,10 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<DetailsImage> images;
 
-    @OneToMany(mappedBy = "book")
-    private List<Reviews> reviews;
+//    @OneToMany(mappedBy = "book")
+//    @JsonBackReference
+////    @JsonIgnore
+//    private List<Reviews> reviews;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     @JsonBackReference

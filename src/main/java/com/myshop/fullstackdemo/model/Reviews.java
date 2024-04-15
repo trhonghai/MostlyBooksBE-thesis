@@ -1,6 +1,9 @@
 package com.myshop.fullstackdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,12 +24,14 @@ public class Reviews {
     private Long id;
     private String comment;
     private float rating;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date date;
 
     @ManyToOne
     @JoinColumn(name="book_id")
-    @JsonIgnore
+
     private Book book;
+
 
     @ManyToOne
     @JoinColumn(name="parent_id")

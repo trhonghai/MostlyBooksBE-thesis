@@ -36,4 +36,8 @@ public class ReviewService {
         List<Reviews> reviews = reviewsRepository.findByBookId(bookId);
         return reviews.size();
     }
+
+    public List<Reviews> getAllReviews() {
+        return reviewsRepository.findAll();
+    }
 }

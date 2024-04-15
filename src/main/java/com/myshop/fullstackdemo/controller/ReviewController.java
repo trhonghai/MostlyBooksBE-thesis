@@ -47,6 +47,23 @@ public class ReviewController {
         return ResponseEntity.ok("Review created and book rating updated");
     }
 
+//    @GetMapping
+//    public ResponseEntity<?> getAllReviews() {
+//        return ResponseEntity.ok(reviewService.getAllReviews());
+//    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllReviews() {
+        return ResponseEntity.ok(reviewsRepository.findAll());
+    }
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<?> getReview(@PathVariable Long reviewId) {
+        Optional<Reviews> review = reviewsRepository.findById(reviewId);
+        if (review.isPresent()) {
+            return ResponseEntity.ok(review.get());
+        }
+        return ResponseEntity.ok("Review not found");
+    }
 
 
 }
