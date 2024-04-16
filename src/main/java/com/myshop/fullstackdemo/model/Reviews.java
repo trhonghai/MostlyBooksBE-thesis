@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,7 +27,7 @@ public class Reviews {
     private float rating;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date date;
-    private int like;
+    private int liked;
 
     @ManyToOne
     @JoinColumn(name="book_id")
@@ -41,4 +42,9 @@ public class Reviews {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @OneToMany(mappedBy = "review")
+    @JsonBackReference
+    private List<LikedReview> likedByCustomers;
+
 }

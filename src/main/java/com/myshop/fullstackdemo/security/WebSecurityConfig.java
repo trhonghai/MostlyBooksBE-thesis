@@ -54,6 +54,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/customer/order/**").permitAll()
                                 .requestMatchers("/api/paypal/**").permitAll()
                                 .requestMatchers("/api/payment/**").permitAll()
+                                .requestMatchers("/liked-reviews/**").permitAll()
                                 .anyRequest().authenticated()
                 )
 //                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
