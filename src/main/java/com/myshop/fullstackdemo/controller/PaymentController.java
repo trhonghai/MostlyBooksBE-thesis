@@ -18,6 +18,7 @@ public class PaymentController {
     private final PaymentRepository paymentRepository;
     private final CustomerRepository customerRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final BookRepository bookRepository;
     @PostMapping("/cash-on-delivery")
     public Order cashOnDelivery(@RequestBody PaymentRequest paymentRequest){
         Order order = new Order();
@@ -69,13 +70,31 @@ public class PaymentController {
         return orderRepository.save(order);
     }
 
-    @PutMapping("delivered/{orderId}")
+    @PutMapping("/delivered/{orderId}")
     public Order deliveredOrder(@PathVariable long orderId){
         Order order = orderRepository.findById(orderId).orElse(null);
         if(order == null){
             throw new IllegalArgumentException("Order not found with id: " + orderId);
         }
         order.getOrderStatus().setStatus(Status.DELIVERED);
+        for (OrderDetail orderDetail : order.getOrderDetails()) {
+            Book book = orderDetail.getBook();
+            Long quantitySold = orderDetail.getQuantity();
+
+            // Cập nhật số lượng đã bán của sản phẩm
+            if (book.getSold() != null) {
+                // Cập nhật số lượng đã bán của sản phẩm
+                book.setSold(book.getSold() + quantitySold);
+            } else {
+                // Nếu trường sold là null, cập nhật số lượng đã bán bằng số lượng mới
+                book.setSold(quantitySold);
+            }
+
+            // Lưu thay đổi vào cơ sở dữ liệu
+            bookRepository.save(book);
+        }
+
+
         return orderRepository.save(order);
     }
 
@@ -98,5 +117,7 @@ public class PaymentController {
         order.getOrderStatus().setStatus(Status.CANCELLED);
         return orderRepository.save(order);
     }
+
+
 
 }

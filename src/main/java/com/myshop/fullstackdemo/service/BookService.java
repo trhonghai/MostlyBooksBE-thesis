@@ -8,6 +8,8 @@ import com.stripe.model.File;
 import com.stripe.model.FileLink;
 import com.stripe.param.FileLinkCreateParams;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -83,6 +85,11 @@ public class BookService {
     }
 
 
+    public List<Book> getBestSellerBooks() {
+        Pageable pageable = PageRequest.of(0, 10); // Lấy 10 cuốn sách đầu tiên
+        List<Book> bestSellerBooks = bookRepository.findBestSellerBooks(pageable);
+        return bestSellerBooks;
+    }
 
 
 

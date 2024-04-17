@@ -281,4 +281,10 @@ public class BookController {
         return ResponseEntity.ok(recommendedBooks);
     }
 
+    @GetMapping("/api/bestseller")
+    public ResponseEntity<List<Book>> getBestSellerBooks() {
+        List<Book> bestSellerBooks = bookService.getBestSellerBooks();
+        return ResponseEntity.ok(bestSellerBooks);
+    }
+
 }

@@ -33,7 +33,7 @@ public class OrderServiceImpl {
             throw new RuntimeException("Customer id is required");
         }
 
-        Order order =new   Order();
+        Order order = new Order();
 
 
         OrderStatus orderStatus = OrderStatus.builder().status(Status.PENDING).orders(new ArrayList<>()).build();

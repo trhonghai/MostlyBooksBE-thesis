@@ -116,49 +116,49 @@ public class PaypalController {
 
     }
 
-    @PostMapping("/orders/create")
-    public Object createOrder (@RequestBody PaymentRequest paymentRequest) throws IOException {
-        String  URL_SUCCESS = "http://localhost:3000";
-        String token = this.generateAccessToken();
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
+        @PostMapping("/orders/create")
+        public Object createOrder (@RequestBody PaymentRequest paymentRequest) throws IOException {
+            String  URL_SUCCESS = "http://localhost:3000";
+            String token = this.generateAccessToken();
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
 
-        headers.set("Authorization", "Bearer " + token);
-        headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + token);
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("intent", "CAPTURE");
-        requestBody.put("purchase_units", new JSONArray()
-                .put(new JSONObject()
-                        .put("amount", new JSONObject()
-                                .put("currency_code", paymentRequest.getCurrency())
-                                .put("value", paymentRequest.getAmount())
-                        )
-                )
-        );
+            JSONObject requestBody = new JSONObject();
+            requestBody.put("intent", "CAPTURE");
+            requestBody.put("purchase_units", new JSONArray()
+                    .put(new JSONObject()
+                            .put("amount", new JSONObject()
+                                    .put("currency_code", paymentRequest.getCurrency())
+                                    .put("value", paymentRequest.getAmount())
+                            )
+                    )
+            );
 
-        HttpEntity<?> entity = new HttpEntity<>(requestBody.toString(), headers);
+            HttpEntity<?> entity = new HttpEntity<>(requestBody.toString(), headers);
 
-        ResponseEntity<Object> response = restTemplate.exchange(
-                BASE + "/v2/checkout/orders",
-                HttpMethod.POST,
-                entity,
-                Object.class
-        );
+            ResponseEntity<Object> response = restTemplate.exchange(
+                    BASE + "/v2/checkout/orders",
+                    HttpMethod.POST,
+                    entity,
+                    Object.class
+            );
 
-        if (response.getStatusCode() == HttpStatus.CREATED) {
-            LOGGER.log(Level.INFO, "ORDER CREATED");
-            System.out.println("response" + response.getBody().toString());
-            ObjectMapper mapper = new ObjectMapper();
-            String jsonString = mapper.writeValueAsString( response.getBody());
-            String orderId = new JSONObject(jsonString).getString("id");
-            Order order = orderService.createOrder(paymentRequest, orderId);
-            return  response.getBody();
-        } else {
-            LOGGER.log(Level.INFO, "FAILED CREATING ORDER");
-            return "Unavailable to get CREATE AN ORDER, STATUS CODE " + response.getStatusCode();
+            if (response.getStatusCode() == HttpStatus.CREATED) {
+                LOGGER.log(Level.INFO, "ORDER CREATED");
+                System.out.println("response" + response.getBody().toString());
+                ObjectMapper mapper = new ObjectMapper();
+                String jsonString = mapper.writeValueAsString( response.getBody());
+                String orderId = new JSONObject(jsonString).getString("id");
+                Order order = orderService.createOrder(paymentRequest, orderId);
+                return  response.getBody();
+            } else {
+                LOGGER.log(Level.INFO, "FAILED CREATING ORDER");
+                return "Unavailable to get CREATE AN ORDER, STATUS CODE " + response.getStatusCode();
+            }
         }
-    }
 
 
     @PostMapping("/orders/{captureId}/refund")
