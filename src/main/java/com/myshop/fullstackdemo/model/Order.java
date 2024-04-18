@@ -24,7 +24,7 @@ public class Order {
     @GeneratedValue
     private long id;
     private double amount;
-    private float shipping;
+    private double shipping;
 
     private Date orderDate;
     private String orderCode;

@@ -284,7 +284,19 @@ public class BookController {
     @GetMapping("/api/bestseller")
     public ResponseEntity<List<Book>> getBestSellerBooks() {
         List<Book> bestSellerBooks = bookService.getBestSellerBooks();
+        for (Book book : bestSellerBooks) {
+            DiscountDetail discountDetail =  discountDetailRepository.findDiscountDetailByBookId(book.getId());
+            double currentPrice;
+            if (discountDetail != null) {
+                currentPrice = discountDetail.getCurrentPrice();
+            } else {
+                currentPrice = book.getPrice();
+            }
+            book.setPrice((float) currentPrice);
+
+        }
         return ResponseEntity.ok(bestSellerBooks);
     }
+
 
 }

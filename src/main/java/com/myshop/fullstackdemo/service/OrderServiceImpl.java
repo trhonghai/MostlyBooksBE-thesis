@@ -69,7 +69,7 @@ public class OrderServiceImpl {
         order.setAmount(Amount);
         order.setOrderDate(new Date());
         order.setCustomer(customer);
-        order.setShipping(10000);
+        order.setShipping(paymentRequest.getShippingFee());
         order.setOrderStatus(orderStatus);
         order.setAddress(address);
         order.setPayment(payment);

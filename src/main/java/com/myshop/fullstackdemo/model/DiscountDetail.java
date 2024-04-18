@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Builder
@@ -35,13 +34,13 @@ public class DiscountDetail {
         @JoinColumn(name = "book_id")
         private Book book;
 
-        public double getCurrentPrice(){
+        public float getCurrentPrice(){
                 if (startDate != null && endDate != null) {
                         Date currentDate = new Date();
                         if (currentDate.after(startDate) && currentDate.before(endDate)) {
                                 // Nếu hiện tại nằm trong thời gian giảm giá, tính giá đã giảm
                                 double discountedPrice = book.getPrice() * (1 - (discountPercentage / 100));
-                                return discountedPrice;
+                                return (float) discountedPrice;
                         }
                 }
                 // Nếu không có hoặc đã hết thời gian giảm giá, trả về giá gốc

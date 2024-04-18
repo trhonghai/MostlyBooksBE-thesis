@@ -16,6 +16,7 @@ public class PaymentRequest {
     private String currency;
     private String description;
     private long customerId;
+    private double shippingFee;
     private List<Long> orderDetailsId;
 }
  

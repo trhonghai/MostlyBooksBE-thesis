@@ -1,4 +1,6 @@
 package com.myshop.fullstackdemo.model.provinces;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,8 +39,11 @@ public class Province {
     @ManyToOne
     @JoinColumn(name = "administrative_region_id")
     private AdministrativeRegion administrativeRegion;
-    public Province(String code, String name) {
+    @JsonCreator
+    public Province(@JsonProperty("code") String code, @JsonProperty("name") String name) {
         this.code = code;
         this.name = name;
     }
+
+
 }
