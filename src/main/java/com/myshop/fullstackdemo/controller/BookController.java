@@ -285,7 +285,7 @@ public class BookController {
     public ResponseEntity<List<Book>> getBestSellerBooks() {
         List<Book> bestSellerBooks = bookService.getBestSellerBooks();
         for (Book book : bestSellerBooks) {
-            DiscountDetail discountDetail =  discountDetailRepository.findDiscountDetailByBookId(book.getId());
+            DiscountDetail discountDetail = (DiscountDetail) discountDetailRepository.findDiscountDetailByBookId(book.getId());
             double currentPrice;
             if (discountDetail != null) {
                 currentPrice = discountDetail.getCurrentPrice();
@@ -298,5 +298,20 @@ public class BookController {
         return ResponseEntity.ok(bestSellerBooks);
     }
 
+    @GetMapping("/flashsale")
+    public ResponseEntity<List<Book>> getFlashSaleBooks() {
+        List<Book> flashSaleBooks = bookService.getFlashSaleBooks();
+        for (Book book : flashSaleBooks) {
+            DiscountDetail discountDetail = (DiscountDetail) discountDetailRepository.findDiscountDetailByBookId(book.getId());
+            double currentPrice;
+            if (discountDetail != null) {
+                currentPrice = discountDetail.getCurrentPrice();
+            } else {
+                currentPrice = book.getPrice();
+            }
+            book.setPrice((float) currentPrice);
+        }
+        return ResponseEntity.ok(flashSaleBooks);
+    }
 
 }

@@ -91,6 +91,11 @@ public class BookService {
         return bestSellerBooks;
     }
 
+    public List<Book> getFlashSaleBooks(){
+        Pageable pageable = PageRequest.of(0, 10); // Lấy 10 cuốn sách đầu tiên
+        List<Book> flashSaleBooks = bookRepository.findFlashSaleBooks(pageable);
+        return flashSaleBooks;
+    }
 
 
 }
