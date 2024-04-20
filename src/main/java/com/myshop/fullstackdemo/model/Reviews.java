@@ -44,7 +44,7 @@ public class Reviews {
     private Customer customer;
 
     @OneToMany(mappedBy = "review")
-    @JsonBackReference
+    @JsonIgnore
     private List<LikedReview> likedByCustomers;
 
 }
