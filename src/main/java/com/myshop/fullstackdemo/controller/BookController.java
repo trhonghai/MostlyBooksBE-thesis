@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -313,5 +314,18 @@ public class BookController {
         }
         return ResponseEntity.ok(flashSaleBooks);
     }
+
+
+    @GetMapping("/new-books")
+    public ResponseEntity<List<Book>> getNewBooks() {
+        // Lấy năm hiện tại
+        LocalDate currentDate = LocalDate.now();
+        int currentYear = currentDate.getYear();
+        // Tìm sách theo năm hiện tại
+        List<Book> newBooks = bookRepository.findBookByIssueIs(String.valueOf(currentYear));
+        return ResponseEntity.ok(newBooks);
+    }
+
+
 
 }

@@ -29,4 +29,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("SELECT d.book FROM DiscountDetail d WHERE d.startDate <= CURRENT_TIMESTAMP AND d.endDate >= CURRENT_TIMESTAMP")
     List<Book> findFlashSaleBooks(Pageable pageable);
 
+    List<Book> findBookByIssueIs (String issue);
+
 }

@@ -6,6 +6,8 @@ import com.myshop.fullstackdemo.model.OrderStatus;
 import com.myshop.fullstackdemo.model.Status;
 import com.myshop.fullstackdemo.repository.OrderDetailRepository;
 import com.myshop.fullstackdemo.repository.OrderRepository;
+import com.myshop.fullstackdemo.service.OrderService;
+import com.myshop.fullstackdemo.service.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +23,12 @@ import java.util.Optional;
 public class OrderController {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final OrderServiceImpl orderService;
 
     @GetMapping("/all")
     public ResponseEntity<List<Order>> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
+
         if (orders.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -67,5 +71,10 @@ public class OrderController {
     public ResponseEntity<Order> deleteOrder(@PathVariable long orderId) {
         orderRepository.deleteById(orderId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/order-status")
+    public List<Order> getOrdersByStatus(@RequestParam("customerId") Long customerId, @RequestParam("status") Status status) {
+        return orderRepository.findByCustomerIdAndOrderStatus_Status(customerId, status);
     }
 }

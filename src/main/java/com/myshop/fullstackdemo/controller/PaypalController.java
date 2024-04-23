@@ -153,6 +153,7 @@ public class PaypalController {
                 String jsonString = mapper.writeValueAsString( response.getBody());
                 String orderId = new JSONObject(jsonString).getString("id");
                 Order order = orderService.createOrder(paymentRequest, orderId);
+
                 return  response.getBody();
             } else {
                 LOGGER.log(Level.INFO, "FAILED CREATING ORDER");
