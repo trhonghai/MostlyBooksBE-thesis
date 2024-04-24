@@ -21,6 +21,8 @@ import org.json.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -117,8 +119,8 @@ public class PaypalController {
     }
 
         @PostMapping("/orders/create")
-        public Object createOrder (@RequestBody PaymentRequest paymentRequest) throws IOException {
-            String  URL_SUCCESS = "http://localhost:3000";
+        public Object createOrder(@RequestBody PaymentRequest paymentRequest) throws IOException {
+            String URL_SUCCESS = "http://localhost:3000";
             String token = this.generateAccessToken();
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
@@ -126,13 +128,21 @@ public class PaypalController {
             headers.set("Authorization", "Bearer " + token);
             headers.setContentType(MediaType.APPLICATION_JSON);
 
+            // Làm tròn giá trị xuống chỉ hai chữ số thập phân
+            BigDecimal amount = new BigDecimal(paymentRequest.getAmount());
+            BigDecimal roundedAmount = amount.setScale(2, RoundingMode.HALF_UP);
+
             JSONObject requestBody = new JSONObject();
             requestBody.put("intent", "CAPTURE");
+            requestBody.put("application_context", new JSONObject()
+                    .put("return_url", URL_SUCCESS)
+                    .put("cancel_url", "http://localhost:3000")
+            );
             requestBody.put("purchase_units", new JSONArray()
                     .put(new JSONObject()
                             .put("amount", new JSONObject()
                                     .put("currency_code", paymentRequest.getCurrency())
-                                    .put("value", paymentRequest.getAmount())
+                                    .put("value", roundedAmount.toString()) // Sử dụng giá trị đã làm tròn
                             )
                     )
             );
@@ -150,11 +160,11 @@ public class PaypalController {
                 LOGGER.log(Level.INFO, "ORDER CREATED");
                 System.out.println("response" + response.getBody().toString());
                 ObjectMapper mapper = new ObjectMapper();
-                String jsonString = mapper.writeValueAsString( response.getBody());
+                String jsonString = mapper.writeValueAsString(response.getBody());
                 String orderId = new JSONObject(jsonString).getString("id");
                 Order order = orderService.createOrder(paymentRequest, orderId);
 
-                return  response.getBody();
+                return response.getBody();
             } else {
                 LOGGER.log(Level.INFO, "FAILED CREATING ORDER");
                 return "Unavailable to get CREATE AN ORDER, STATUS CODE " + response.getStatusCode();

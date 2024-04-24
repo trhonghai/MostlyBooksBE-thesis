@@ -252,9 +252,10 @@ public class BookController {
             @RequestParam(value = "maxPrice",required = false) Float maxPrice,
             @RequestParam(value = "categoryName",required = false) String categoryName,
             @RequestParam(value="publisherName",required = false) String publisherName,
-            @RequestParam(value="coverType",required = false) String cover
+            @RequestParam(value="coverType",required = false) String cover,
+            @RequestParam(value="issue",required = false) String issue
     ) {
-        List<Book> filteredBooks = bookService.filterBooks(minPrice, maxPrice, categoryName, publisherName, cover);
+        List<Book> filteredBooks = bookService.filterBooks(minPrice, maxPrice, categoryName, publisherName, cover,issue);
         return  ResponseEntity.ok(filteredBooks);
     }
 
@@ -324,6 +325,12 @@ public class BookController {
         // Tìm sách theo năm hiện tại
         List<Book> newBooks = bookRepository.findBookByIssueIs(String.valueOf(currentYear));
         return ResponseEntity.ok(newBooks);
+    }
+
+    @GetMapping("/get-book-by-category/{category}")
+    public ResponseEntity<List<Book>> getBookByCategory(@PathVariable Long category){
+        List<Book> books = bookRepository.findBooksByCategoryId(category);
+        return ResponseEntity.ok(books);
     }
 
 

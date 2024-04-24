@@ -75,9 +75,9 @@ public class BookService {
             return detailsImageRepository.save(detailsImage);
         }
 
-    public List<Book> filterBooks(Float minPrice, Float maxPrice, String categoryName, String publisherName, String cover) {
+    public List<Book> filterBooks(Float minPrice, Float maxPrice, String categoryName, String publisherName, String cover, String issue) {
         // Gọi phương thức tương ứng trong repository để lọc sách
-        return bookRepository.findBooksByFilters(minPrice, maxPrice, categoryName, publisherName, cover);
+        return bookRepository.findBooksByFilters(minPrice, maxPrice, categoryName, publisherName, cover, issue);
     }
     public List<Book> searchBooks(String query) {
         List<Book> books = bookRepository.searchProducts(query);

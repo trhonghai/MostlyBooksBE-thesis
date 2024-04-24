@@ -14,8 +14,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "(:minPrice IS NULL OR b.price BETWEEN :minPrice AND :maxPrice) " +
             "AND (:categoryName IS NULL OR b.category.name = :categoryName) " +
             "AND (:publisherName IS NULL OR b.publisher.name = :publisherName) " +
-            "AND (:coverType IS NULL OR b.cover = :coverType OR b.cover IS NULL OR b.cover = '')")
-    List<Book> findBooksByFilters(Float minPrice, Float maxPrice, String categoryName, String publisherName, String coverType);
+            "AND (:coverType IS NULL OR b.cover = :coverType OR b.cover IS NULL OR b.cover = '')" +
+            "AND (:issue IS NULL OR b.issue = :issue OR b.issue IS NULL OR b.issue = '')")
+    List<Book> findBooksByFilters(Float minPrice, Float maxPrice, String categoryName, String publisherName, String coverType, String issue);
 
 
     @Query("SELECT p FROM Book p WHERE " +
@@ -30,5 +31,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findFlashSaleBooks(Pageable pageable);
 
     List<Book> findBookByIssueIs (String issue);
+
+    List<Book> findBooksByCategoryId (long category);
 
 }
