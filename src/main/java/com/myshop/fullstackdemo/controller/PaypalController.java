@@ -120,7 +120,7 @@ public class PaypalController {
 
         @PostMapping("/orders/create")
         public Object createOrder(@RequestBody PaymentRequest paymentRequest) throws IOException {
-            String URL_SUCCESS = "http://localhost:3000";
+            String URL_SUCCESS = "http://localhost:3000/success";
             String token = this.generateAccessToken();
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();

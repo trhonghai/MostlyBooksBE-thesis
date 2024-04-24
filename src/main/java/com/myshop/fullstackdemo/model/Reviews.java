@@ -43,7 +43,7 @@ public class Reviews {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany(mappedBy = "review")
+    @OneToMany(mappedBy = "review" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<LikedReview> likedByCustomers;
 
