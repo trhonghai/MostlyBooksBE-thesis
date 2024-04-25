@@ -43,6 +43,7 @@ public class Book {
     private int reviewCount;
     private Long inventory;
     private Long sold;
+    private long liked;
 
     @ManyToOne
     @JoinColumn(name = "authour_id")
