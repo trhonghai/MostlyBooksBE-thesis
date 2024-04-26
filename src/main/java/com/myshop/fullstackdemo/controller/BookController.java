@@ -51,7 +51,7 @@ public class BookController {
             } else {
                 currentPrice = book.getPrice();
             }
-            book.setDiscountedPrice((float) currentPrice);
+            book.setPrice((float) currentPrice);
             booksWithPrices.add(book);
         }
 
@@ -122,7 +122,8 @@ public class BookController {
         bookEntity.setImg(fileLink.getUrl());
         bookEntity.setIssue(bookEntity.getIssue());
         bookEntity.setPages(bookEntity.getPages());
-        bookEntity.setPrice(bookEntity.getPrice());
+        bookEntity.setOriginalPrice(bookEntity.getOriginalPrice());
+        bookEntity.setPrice(bookEntity.getOriginalPrice());
         bookEntity.setISBN_10(bookEntity.getISBN_10());
         bookEntity.setISBN_13(bookEntity.getISBN_13());
         bookEntity.setDimensions(bookEntity.getDimensions());
@@ -173,7 +174,8 @@ public class BookController {
                     existingBook.setPublisher(publisher);
                     existingBook.setName(updatedBook.getName());
                     existingBook.setDescription(updatedBook.getDescription());
-                    existingBook.setPrice(updatedBook.getPrice());
+                    existingBook.setOriginalPrice(updatedBook.getOriginalPrice());
+                    existingBook.setPrice(updatedBook.getOriginalPrice());
                     existingBook.setPages(updatedBook.getPages());
                     existingBook.setISBN_10(updatedBook.getISBN_10());
                     existingBook.setISBN_13(updatedBook.getISBN_13());
@@ -324,6 +326,16 @@ public class BookController {
         int currentYear = currentDate.getYear();
         // Tìm sách theo năm hiện tại
         List<Book> newBooks = bookRepository.findBookByIssueIs(String.valueOf(currentYear));
+        for (Book book : newBooks) {
+            DiscountDetail discountDetail = (DiscountDetail) discountDetailRepository.findDiscountDetailByBookId(book.getId());
+            double currentPrice;
+            if (discountDetail != null) {
+                currentPrice = discountDetail.getCurrentPrice();
+            } else {
+                currentPrice = book.getOriginalPrice();
+            }
+            book.setPrice((float) currentPrice);
+        }
         return ResponseEntity.ok(newBooks);
     }
 

@@ -87,7 +87,7 @@ public class User implements UserDetails {
 
 //    @Override
     @Override
-    @JsonIgnore
+//    @JsonIgnore
     public boolean isEnabled() {
         return this.enabled;
     }

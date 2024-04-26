@@ -29,7 +29,7 @@ public class Book {
     @Column(length = 5000)
     private String description;
     private float price;
-    private float discountedPrice;
+    private float originalPrice;
     private String img;
     private Long pages;
     private String ISBN_10;
