@@ -1,12 +1,7 @@
 package com.myshop.fullstackdemo;
 
-import com.myshop.fullstackdemo.model.Address;
-import com.myshop.fullstackdemo.model.Customer;
 import com.myshop.fullstackdemo.repository.AddressRepository;
-import com.myshop.fullstackdemo.repository.CountryRepository;
 import com.myshop.fullstackdemo.repository.CustomerRepository;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -20,8 +15,7 @@ public class AddressRepositoryTests {
     private AddressRepository addressRepository;
     @Autowired
     private CustomerRepository customerRepository;
-    @Autowired
-    private CountryRepository countryRepository;
+
 //    @Test
 //    public void testCreateAddress(){
 //        long customerId = 1;

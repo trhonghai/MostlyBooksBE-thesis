@@ -32,6 +32,30 @@ public class ShippingRateController {
 
     }
 
+    @GetMapping("/get-all")
+    public ResponseEntity<Iterable<ShippingRate>> getAllShippingRates() {
+        return ResponseEntity.ok(shippingRateRepository.findAll());
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<ShippingRate> getShippingRate(@PathVariable Long id) {
+        return ResponseEntity.ok(shippingRateRepository.findById(id).get());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteShippingRate(@PathVariable Long id) {
+        shippingRateRepository.deleteById(id);
+        return ResponseEntity.ok("Shipping rate deleted successfully");
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateShippingRate(@PathVariable Long id, @RequestBody ShippingRequest shippingRequest) {
+        ShippingRate shippingRate = shippingRateRepository.findById(id).get();
+        shippingRate.setPrice(shippingRequest.getPrice());
+        shippingRate.setDay(shippingRequest.getDay());
+        Province province = provinceRepository.findByCode(shippingRequest.getProvinceCode());
+        shippingRate.setProvince(province);
+        shippingRateRepository.save(shippingRate);
+        return ResponseEntity.ok("Shipping rate updated successfully");
+    }
     @GetMapping("/get")
     public ResponseEntity<ShippingRate> getShippingRate(@RequestParam String provinceName) {
         Province province = provinceRepository.findByName(provinceName);
@@ -41,4 +65,6 @@ public class ShippingRateController {
         ShippingRate shippingRate = shippingRateRepository.findByProvince(province);
         return ResponseEntity.ok(shippingRate);
     }
+
+
 }
